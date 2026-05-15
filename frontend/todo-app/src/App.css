@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=GFS+Didot&family=Gothic+A1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Oswald:wght@200..700&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+:root {
+  --them-primary: #0059F7;
+  --them-black: #000D1E;
+  --them-surface: #F4F8FF;
+  --them-stroke: #DEEAFF;
+  --them-white: #FFFFFF;
+  --them-text-gray: #777777;
+  --them-red: #F90505;
+  --them-green: #008000;
+  --them-progress-color: #FB8500;
+  --them-gradient: linear-gradient(to bottom, #F3F7FF 100%, #F3F7FF 100%);
+  --instrument: "Instrument Sans", sans-serif
+}
+
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+.form-error {
+  display: block;
+  font-weight: 500;
+  font-size: 12.25px;
+  color: #db3030;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+body {
+  background: linear-gradient(135deg, #153677, #4e085f);
+}
