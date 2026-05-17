@@ -1,78 +1,77 @@
-import React from 'react'
+import React, { useState } from 'react'
 import "./TodoApp.css"
+import { MdDelete } from "react-icons/md";
+import { MdEdit } from "react-icons/md";
+import { Button, Form as AntForm, Input } from "antd"
 import { Formik } from "formik"
-import { todoSchema } from './Validations'
-import { Form as AntForm, Button, Col, Divider, Input, Row, Tabs } from "antd"
-import { PlusOutlined, CheckOutlined } from "@ant-design/icons"
-import { CiLight } from "react-icons/ci";
-import { LuListTodo } from "react-icons/lu";
-import todoIcon from "../../assets/icon.png"
+import { todoSchema } from "./Validations"
+import { useEffect } from 'react';
+import axios from "axios"
 
 const TodoApp = () => {
 
-  const [form] = AntForm.useForm()
+  const [form] = AntForm.useForm();
+  const [todos, setTodos] = useState([])
 
   const initialValues = {
     todotitle: ""
   }
 
-  const onSubmit = (values, { resetForm }) => {
+  const onSubmit = (values) => {
     console.log(values);
-    resetForm();
   }
 
+  const getTodo = async () => {
+    const response = await axios("http://localhost:3000/get-all-todos")
+  }
+
+  useEffect(() => {
+    getTodo();
+  }, [])
+
   return (
-    <div className='todo-app-container'>
+    <div className="todo-container">
       <div className="todo-card">
-        <h1 className='todo-title'>To-Do-List
-          <img src={todoIcon} className='todo-icon' />
-        </h1>
+        <h1 className="todo-title">Todo App</h1>
 
-        <div className="input-group">
-          <Formik
-            initialValues={initialValues}
-            validationSchema={todoSchema}
-            onSubmit={onSubmit}
-          >
-            {({
-              handleSubmit,
-              handleBlur,
-              handleChange,
-              handleReset,
-              errors,
-              values,
-              touched
-            }) => (
-              <AntForm
-                form={form}
-                layout='vertical'
-                className='todo-form'
-                onFinish={handleSubmit}
+        <Formik
+          initialValues={initialValues}
+          validationSchema={todoSchema}
+          onSubmit={onSubmit}
+        >
+          {({
+            handleSubmit,
+            handleBlur,
+            handleChange,
+            values,
+            errors,
+            touched
+          }) => (
+            <AntForm
+              className="todo-form"
+              form={form}
+              layout='vertical'
+              onFinish={handleSubmit}
+            >
+              <AntForm.Item
+               
               >
-                <div className='input-group'>
-                  <Input
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    placeholder='Add your Task'
-                    className='add-task-input'
-                    name='todotitle'
-                    id='todo-input'
-                  ></Input>
-
-                  <Button
-                    htmlType='submit'
-                    className='add-task-btn'
-                  >ADD
-                  </Button>
-
-                </div>
-
-              </AntForm>
-            )}
-          </Formik>
-        </div>
-
-
+                <Input
+                  type="text"
+                  placeholder="Enter your task"
+                  className="todo-input"
+                  onBlur={handleBlur}
+                  onChange={(e) => setTodos(e.target.value)}
+                  value={values.todotitle}
+                  name='todotitle'
+                />
+              </AntForm.Item>
+              <Button className="add-task-btn" htmlType='submit'>
+                Add Task
+              </Button>
+            </AntForm>
+          )}
+        </Formik>
       </div>
     </div>
   )

@@ -16,7 +16,6 @@
 }
 
 
-
 * {
   margin: 0;
   padding: 0;
@@ -35,4 +34,18 @@
 
 body {
   background: linear-gradient(135deg, #153677, #4e085f);
+}
+
+.ant-form-item {
+  margin: 0 !important;
+}
+
+
+.form-error {
+  display: block;
+  font-weight: 500;
+  font-size: 12.25px;
+  color: #db3030;
+  width: 100%;
+  margin-bottom: 10px;
 }
