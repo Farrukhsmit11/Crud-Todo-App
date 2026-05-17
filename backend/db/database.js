@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-const mongodbUri = "mongodb+srv://farrukh-admin123:e47Lu5E5IL37Ripe@clusterone.khrcakp.mongodb.net/?appName=ClusterOne"
+const mongodbUri = process.env.MONGO_DB_URI
 
 const connectDB = async () => {
     try {
