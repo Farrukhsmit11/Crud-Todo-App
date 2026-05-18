@@ -1,10 +1,8 @@
 .todo-container {
     min-height: 100vh;
-    background: #f3f4f6;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
 }
 
 .todo-card {
@@ -28,7 +26,7 @@
     display: flex;
     flex-direction: column;
     gap: 15px;
-    margin-bottom: 20px;
+    height: auto;
 }
 
 .todo-input {
@@ -38,6 +36,7 @@
     border-radius: 8px;
     outline: none;
     font-size: 16px;
+    font-family: "Poppins", sans-serif;
 }
 
 .todo-input:focus {
@@ -93,18 +92,39 @@
     gap: 10px;
 }
 
-.edit-btn {
-    border: none;
-    background: transparent;
-    color: #4f46e5;
-    cursor: pointer;
-    font-size: 15px;
+.todos-list {
+    list-style: none;
+    padding: 3px 2px;
+}
+
+.todo-form-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: end;
 }
 
 .delete-btn {
-    border: none;
-    background: transparent;
-    color: #dc2626;
-    cursor: pointer;
-    font-size: 15px;
+    background: #ef4444;
+    color: white;
+    height: 41px;
+    padding: 22px;
+    box-shadow: none !important;
+}
+
+.delete-btn span {
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+}
+
+.edit-btn {
+    background: #3b82f6;
+    color: white;
+    height: 41px;
+    padding: 22px;
+}
+
+.edit-btn span {
+    font-family: "Poppins ", sans-serif;
+    font-weight: 500;
 }
