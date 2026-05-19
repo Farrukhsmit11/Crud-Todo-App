@@ -12,6 +12,7 @@
     padding: 25px;
     border-radius: 12px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    height: auto;
 }
 
 .todo-title {
@@ -66,13 +67,6 @@
     margin-bottom: 20px;
 }
 
-.todo-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
 .todo-item {
     display: flex;
     justify-content: space-between;
@@ -80,6 +74,12 @@
     background: #f9fafb;
     padding: 15px;
     border-radius: 8px;
+}
+
+.button-group{
+    display: flex;
+    justify-content: end;
+    gap: 15px;
 }
 
 .todo-text {
@@ -90,11 +90,6 @@
 .todo-actions {
     display: flex;
     gap: 10px;
-}
-
-.todos-list {
-    list-style: none;
-    padding: 3px 2px;
 }
 
 .todo-form-actions {
@@ -109,7 +104,7 @@
     color: white;
     height: 41px;
     padding: 22px;
-    box-shadow: none !important;
+    border-radius: 12px;
 }
 
 .delete-btn span {

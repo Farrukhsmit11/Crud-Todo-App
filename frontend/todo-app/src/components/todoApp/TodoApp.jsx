@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import "./TodoApp.css"
 import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
-import { Button, Form as AntForm, Input, message } from "antd"
+import { Button, Form, Input, message } from "antd"
 import { Formik } from "formik"
 import { todoSchema } from "./Validations"
 import { useEffect } from 'react';
@@ -11,9 +11,9 @@ import { PlusOutlined } from "@ant-design/icons"
 
 const TodoApp = () => {
 
-  const [form] = AntForm.useForm();
+  const [form] = Form.useForm();
   const [todos, setTodos] = useState([])
-  const [inputValue, setInputVlaue] = useState("");
+  const [inputValue, setInputValue] = useState("");
 
   const BASE_URL = "http://localhost:3000"
 
@@ -25,107 +25,88 @@ const TodoApp = () => {
     console.log(values);
   }
 
-  const getTodos = async () => {
-    event.preventDefault()
-    try {
-      const response = await axios.get(`${BASE_URL}/get-all-todos`)
-      setTodos(response.data.data)
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error fetching todos", error)
-    }
+  const getTodo = async () => {
+    const response = await axios.get(`${BASE_URL}/get-all-todos`)
+    const data = response?.data?.response2
+    setTodos(data)
+    console.log("response", response)
   }
 
   const addTodo = async () => {
-    event.preventDefault();
     try {
-      const handlePost = await axios.post(`${BASE_URL}/add-todo`,
-        {
-          todoContent: inputValue
-        }
-      )
+      await axios.post(`${BASE_URL}/add-todo`, {
+        title: inputValue
+      })
+      setInputValue("")
     } catch (error) {
-      console.error("error adding todo", error)
+      console.error("todo cannot be empty", error)
+    }
+  }
+
+  const deleteTodo = async () => {
+    try {
+      await axios.delete(`${BASE_URL}/delete-todo:id`)
+    } catch (error) {
+      console.error("error deleting todo", error)
     }
   }
 
   useEffect(() => {
-    getTodos()
+    getTodo()
   }, [])
 
   return (
     <div className="todo-container">
       <div className="todo-card">
         <h1 className="todo-title">Todo App</h1>
-
-        <Formik
-          initialValues={initialValues}
-          validationSchema={todoSchema}
-          onSubmit={onSubmit}
+        <Form
+          onFinish={addTodo}
+          layout='vertical'
+          form={form}
+          className='todo-form'
         >
-          {({
-            handleSubmit,
-            handleBlur,
-            handleChange,
-            values,
-            errors,
-            touched
-          }) => (
-            <>
-              <AntForm
-                className="todo-form"
-                form={form}
-                layout='vertical'
-                onFinish={addTodo}
-              >
-                <AntForm.Item
-                  validateStatus={errors.task && touched.task ? "error" : ""}
-                  help={
-                    errors.task && touched.task ? (
-                      <span className='form-error'>{errors.task}</span>
-                    ) : null
-                  }
-                >
-                  <Input
-                    type="text"
-                    placeholder="Enter your task"
-                    className="todo-input"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.task}
-                    name='task'
-                  />
-                </AntForm.Item>
-                <Button
-                  icon={<PlusOutlined />}
-                  className="add-task-btn"
-                  htmlType='submit'
-                >
-                  Add Task
-                </Button>
+          <Form.Item>
+            <Input
+              type="text"
+              placeholder="Enter your task"
+              className="todo-input"
+              onChange={(e) => setInputValue(e.target.value)}
+              value={inputValue}
+              name='task'
+            />
+          </Form.Item>
 
-                {todos.map((todo) => {
-                  return (
-                    <div key={todo.id}>
-                      <ul className='todos-list'>
-                        <li>
-                          {todo.todoContent}
-                        </li>
-                      </ul>
+          <Button
+            icon={<PlusOutlined />}
+            className="add-task-btn"
+            htmlType='submit'
+          >
+            Add Task
+          </Button>
 
-                      <div className="todo-form-actions">
-                        <Button className='edit-btn'>Edit</Button>
-                        <Button className='delete-btn'>Delete</Button>
-                      </div>
-                    </div>
-                  )
-                })}
-              </AntForm>
-            </>
-          )}
-        </Formik>
+          <div>
+            {todos?.map((item, index) => {
+              return (
+                <div key={index}>
+                  <ul className='todos-list'>
+                    <li>{item.title}</li>
+                  </ul>
+
+                  <div className="button-group">
+                    <Button className="edit-btn">Edit</Button>
+                    <Button
+                      onClick={() => deleteTodo()}
+                      className="delete-btn"
+                    >Delete</Button>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </Form>
       </div>
-    </div>
+    </div >
+
   )
 }
 
