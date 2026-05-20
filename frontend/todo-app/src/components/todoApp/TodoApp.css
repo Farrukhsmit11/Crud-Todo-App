@@ -9,7 +9,7 @@
     width: 100%;
     max-width: 500px;
     background: white;
-    padding: 25px;
+    padding: 16px 18px;
     border-radius: 12px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     height: auto;
@@ -61,65 +61,57 @@
     color: white !important;
 }
 
-.empty-text {
-    text-align: center;
-    color: #6b7280;
-    margin-bottom: 20px;
-}
-
-.todo-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #f9fafb;
-    padding: 15px;
-    border-radius: 8px;
-}
-
-.button-group{
+.button-group {
     display: flex;
     justify-content: end;
     gap: 15px;
 }
 
-.todo-text {
-    color: #374151;
-    font-size: 16px;
-}
-
-.todo-actions {
-    display: flex;
-    gap: 10px;
-}
-
-.todo-form-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    justify-content: end;
-}
-
-.delete-btn {
-    background: #ef4444;
-    color: white;
-    height: 41px;
-    padding: 22px;
-    border-radius: 12px;
-}
-
-.delete-btn span {
-    font-family: "Poppins", sans-serif;
-    font-weight: 500;
-}
-
-.edit-btn {
-    background: #3b82f6;
-    color: white;
-    height: 41px;
-    padding: 22px;
-}
-
 .edit-btn span {
     font-family: "Poppins ", sans-serif;
     font-weight: 500;
+}
+
+.list-group {
+    list-style: none;
+    margin-top: 20px;
+}
+
+.list-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.buttons-main {
+    margin-left: 12px;
+    display: flex;
+    gap: 12px;
+}
+
+.edit-btn {
+    padding: 8px 16px;
+    color: #4f46e5 !important;
+    border-radius: 0.5rem;
+    border: none !important;
+    box-shadow: none !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.list-parent {
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.delete-btn {
+    padding: 8px 16px;
+    color: #dc2626 !important;
+    box-shadow: none !important;
+    border-radius: 0.5rem;
+    border: none !important;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    transition: all 0.2s ease-in-out;
 }

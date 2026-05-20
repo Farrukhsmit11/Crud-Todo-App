@@ -15,28 +15,28 @@ app.use(cors({
 }));
 
 app.get("/get-all-todos", async (request, response) => {
-    const response2 = await Todo.find()
-    response.send({ response2 })
+    const todoContent = await Todo.find()
+    response.send({ todoContent })
 })
 
 app.post("/add-todo", async (request, response) => {
     const obj = {
         title: request.body.title,
     }
-    const data1 = await Todo.create(obj)
+    const todoData = await Todo.create(obj)
     response.status(200).send({ data: obj, message: "todo added sucessfully" })
 })
 
 app.patch("/edit-todo:id", (request, response) => {
 })
 
-app.delete("/delete-todo:id", async (request, response) => {
+app.delete("/delete-todo", async (request, response) => {
     const id = request.params.id
-    const res = await Todo.findByIdAndDelete()
-    if (res) {
-        response.status(201).send({ status: 200, message: "todo deleted" })
-    } else {
-        response.status(200).send({ status: 400, message: "todo not found" })
+    try {
+        const res = await Todo.findOneAndDelete(id)
+        response.status(200).send({ status: 200, message: "todo deleted" })
+    } catch (error) {
+        console.error("error", error)
     }
 })
 
