@@ -3,8 +3,6 @@ import "./TodoApp.css"
 import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 import { Button, Form, Input, message } from "antd"
-import { Formik } from "formik"
-import { todoSchema } from "./Validations"
 import { useEffect } from 'react';
 import axios from "axios"
 import { PlusOutlined } from "@ant-design/icons"
@@ -14,6 +12,8 @@ const TodoApp = () => {
   const [form] = Form.useForm();
   const [todos, setTodos] = useState([])
   const [inputValue, setInputValue] = useState("");
+  const [editText, setEditText] = useState("");
+  const [editId, setEditId] = useState(null)
 
   const BASE_URL = "http://localhost:3000"
 
@@ -21,19 +21,14 @@ const TodoApp = () => {
     console.log(values);
   }
 
-  const initialValues = {
-    task: ""
-  }
-
   const getTodo = async () => {
     const response = await axios.get(`${BASE_URL}/get-all-todos`)
     const data = response?.data?.todoContent
     setTodos(data)
-    console.log("response", response)
   }
 
   const addTodo = async () => {
-    event.preventDefault()
+    event.preventDefault();
     try {
       await axios.post(`${BASE_URL}/add-todo`, {
         title: inputValue
@@ -56,6 +51,17 @@ const TodoApp = () => {
     }
   }
 
+  const editTodo = async () => {
+    event.preventDefault();
+    try {
+      const editTodo = await axios.patch(`${BASE_URL}/edit-todo`)
+      const res1 = editTodo.data?.res
+      getTodo();
+    } catch (error) {
+      console.error("errro editing todo", error)
+    }
+  }
+
   useEffect(() => {
     getTodo()
   }, [])
@@ -64,74 +70,69 @@ const TodoApp = () => {
     <div className="todo-container">
       <div className="todo-card">
         <h1 className="todo-title">Todo App</h1>
-
-        <Formik
-          initialValues={initialValues}
-          validationSchema={todoSchema}
+        <Form
+          onFinish={addTodo}
+          layout='vertical'
+          form={form}
+          className='todo-form'
         >
-          {({
-            handleSubmit,
-            handleBlur,
-            handleChange,
-            errors,
-            touched
-          }) => (
-            <Form
-              onFinish={addTodo}
-              layout='vertical'
-              form={form}
-              className='todo-form'
-            >
-              <Form.Item
-                validateStatus={errors.task && touched.task ? "error" : ""}
-                help={
-                  errors.task && touched.task ? (
-                    <span className='form-error'>{errors.task}</span>
-                  ) : null
-                }
-              >
-                <Input
-                  type="text"
-                  placeholder="Enter your task"
-                  onBlur={handleBlur}
-                  className="todo-input"
-                  onChange={(e) => setInputValue(e.target.value)}
-                  value={inputValue}
-                  name='title'
-                />
-              </Form.Item>
+          <Form.Item
+          >
+            <Input
+              type="text"
+              placeholder="What’s on your mind today?"
+              className="todo-input"
+              onChange={(e) => setInputValue(e.target.value)}
+              value={inputValue}
+              name='title'
+            />
+          </Form.Item>
 
-              <Button
-                icon={<PlusOutlined />}
-                className="add-task-btn"
-                htmlType='submit'
-              >
-                Add Task
-              </Button>
+          <Button
+            icon={<PlusOutlined />}
+            className="add-task-btn"
+            htmlType='submit'
+          >
+            Add Task
+          </Button>
 
-              <ul className='list-group'>
-                {todos?.map((todo, index) => {
-                  return (
-                    <div key={index} className="list-parent"
-                    >
-                      <li className='list-item'>{todo.title}
-                      </li>
+          <ul className='list-group'>
+            {todos?.map((todo, index) => {
+              return (
+                <div key={index} className="list-parent"
+                >
+                  {editId === todo.id ? (
+                    <>
+                      <Input
+                        className='edit-todo-input'
+                        onChange={(e) => setEditText(e.target.value)}
+                        placeholder='Edit Todo'
+                        value={editText}
+                      ></Input>
+                      <Button className='save-btn'>Save</Button>
+                    </>
+                  ) : (
+                    <li className='list-item'>{todo.title}
                       <div className="buttons-main">
-                        <Button className='edit-btn'>Edit</Button>
                         <Button
-                          onClick={() => deleteTodo()}
+                          icon={<MdEdit />}
+                          onClick={() => setEditId(todo.id)}
+                          className='edit-btn'
+                        ></Button>
+
+                        <Button
+                          icon={<MdDelete />}
                           className='delete-btn'
-                        >Delete
-                        </Button>
+                          onClick={() => deleteTodo()}
+                        ></Button>
                       </div>
-                    </div>
-                  )
-                })}
-              </ul>
-            </Form>
-          )
-          }
-        </Formik>
+                    </li>
+                  )}
+                </div>
+              )
+            })}
+          </ul>
+        </Form>
       </div>
     </div >
 

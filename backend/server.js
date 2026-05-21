@@ -27,7 +27,14 @@ app.post("/add-todo", async (request, response) => {
     response.status(200).send({ data: obj, message: "todo added sucessfully" })
 })
 
-app.patch("/edit-todo:id", (request, response) => {
+app.patch("/edit-todo", async (request, response) => {
+    const id = request.params.id
+    try {
+        const edited = await Todo.findOneAndUpdate(id)
+        response.status(200).send({ status: 200, message: "todo updated" })
+    } catch (error) {
+        console.error("error editing todo", error)
+    }
 })
 
 app.delete("/delete-todo", async (request, response) => {
