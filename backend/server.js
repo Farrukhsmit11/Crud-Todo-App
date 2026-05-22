@@ -16,7 +16,7 @@ connectDB();
 app.use(cors({
     origin: [
         'http://localhost:5173',
-        'https://your-frontend-domain.vercel.app'
+        "https://crud-todo-app-frontend.netlify.app"
     ],
     credentials: true
 }));
