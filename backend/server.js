@@ -3,6 +3,7 @@ import cors from "cors"
 import 'dotenv/config';
 import "./db/database.js"
 import { Todo } from "./models/Todo.js"
+import connectDB from "./db/database.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000
@@ -10,12 +11,19 @@ let todos = []
 
 app.use(express.json())
 
+connectDB();
+
 app.use(cors({
     origin: [
         'http://localhost:5173',
         'https://your-frontend-domain.vercel.app'
-    ]
+    ],
+    credentials: true
 }));
+
+app.get("/", (request, response) => {
+    response.send("backend working")
+})
 
 app.get("/get-all-todos", async (request, response) => {
     const todoContent = await Todo.find()
@@ -36,7 +44,7 @@ app.patch("/edit-todo/:id", async (request, response) => {
     try {
         const edited = await Todo.findOneAndUpdate(
             { _id: id },
-            { title: title },
+            { title },
             { new: true }
         )
         response.status(200).send({ status: 200, message: "todo updated" })
@@ -45,7 +53,7 @@ app.patch("/edit-todo/:id", async (request, response) => {
     }
 })
 
-app.delete("/delete-todo", async (request, response) => {
+app.delete("/delete-todo/:id", async (request, response) => {
     const id = request.params.id
     try {
         const res = await Todo.findOneAndDelete(id)
@@ -55,6 +63,4 @@ app.delete("/delete-todo", async (request, response) => {
     }
 })
 
-app.listen(PORT, () => {
-    console.log(`Server is running on ${PORT}`)
-})
+export default app
