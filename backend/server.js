@@ -55,4 +55,6 @@ app.delete("/delete-todo", async (request, response) => {
     }
 })
 
-export default app
+app.listen(PORT, () => {
+    console.log(`Server is running on ${PORT}`)
+})
