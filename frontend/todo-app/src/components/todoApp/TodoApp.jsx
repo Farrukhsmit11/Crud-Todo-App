@@ -7,6 +7,16 @@ import { useEffect } from 'react';
 import axios from "axios"
 import { PlusOutlined } from "@ant-design/icons"
 
+
+export const getUrl = () => {
+  const isProduction = window.location.href.includes("https")
+  const baseUrl = isProduction ?
+    "https://crud-todo-app-three.vercel.app"
+    :
+    "http:localhost:3000"
+  return baseUrl
+}
+
 const TodoApp = () => {
 
   const [form] = Form.useForm();
@@ -16,14 +26,13 @@ const TodoApp = () => {
   const [editId, setEditId] = useState(null);
   const [isEditing, setIsEditing] = useState(false)
 
-  const BASE_URL = "http://localhost:3000"
 
   const onSubmit = (values) => {
     console.log(values);
   }
 
   const getTodo = async () => {
-    const response = await axios.get(`${BASE_URL}/get-all-todos`)
+    const response = await axios.get(`${getUrl()}/get-all-todos`)
     const data = response?.data?.todoContent
     setTodos(data)
   }
@@ -31,7 +40,7 @@ const TodoApp = () => {
   const addTodo = async () => {
     event.preventDefault();
     try {
-      await axios.post(`${BASE_URL}/add-todo`, {
+      await axios.post(`${getUrl()}/add-todo`, {
         title: inputValue
       })
       message.success("Todo added sucessfully ")
@@ -46,7 +55,7 @@ const TodoApp = () => {
   const deleteTodo = async () => {
     event.preventDefault()
     try {
-      const deleteTodo = await axios.delete(`${BASE_URL}/delete-todo`)
+      const deleteTodo = await axios.delete(`${getUrl()}/delete-todo`)
       const one = deleteTodo.data?.res
       message.success("todo deleted sucessfully")
       getTodo();
@@ -58,7 +67,7 @@ const TodoApp = () => {
   const editTodo = async (id) => {
     event.preventDefault();
     try {
-      const editTodo = await axios.patch(`${BASE_URL}/edit-todo/${id}`, {
+      const editTodo = await axios.patch(`${getUrl()}/edit-todo/${id}`, {
         title: editText
       })
       const res1 = editTodo.data?.edited
