@@ -5,7 +5,7 @@ import "./db/database.js"
 import { Todo } from "./models/Todo.js"
 
 const app = express();
-const port = 3000
+const PORT = process.env.PORT || 3000
 let todos = []
 
 app.use(express.json())
@@ -29,8 +29,13 @@ app.post("/add-todo", async (request, response) => {
 
 app.patch("/edit-todo", async (request, response) => {
     const id = request.params.id
+    const title = request.body
     try {
-        const edited = await Todo.findOneAndUpdate(id)
+        const edited = await Todo.findOneAndUpdate(
+            { _id: id },
+            { title: title },
+            { new: true }
+        )
         response.status(200).send({ status: 200, message: "todo updated" })
     } catch (error) {
         console.error("error editing todo", error)
@@ -47,6 +52,6 @@ app.delete("/delete-todo", async (request, response) => {
     }
 })
 
-app.listen(port, () => {
-    console.log(`Server is running on ${port}`)
+app.listen(PORT, () => {
+    console.log(`Server is running on ${PORT}`)
 })

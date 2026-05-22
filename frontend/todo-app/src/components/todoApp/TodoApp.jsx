@@ -13,7 +13,8 @@ const TodoApp = () => {
   const [todos, setTodos] = useState([])
   const [inputValue, setInputValue] = useState("");
   const [editText, setEditText] = useState("");
-  const [editId, setEditId] = useState(null)
+  const [editId, setEditId] = useState(null);
+  const [isEditing, setIsEditing] = useState(false)
 
   const BASE_URL = "http://localhost:3000"
 
@@ -33,10 +34,12 @@ const TodoApp = () => {
       await axios.post(`${BASE_URL}/add-todo`, {
         title: inputValue
       })
+      message.success("Todo added sucessfully ")
       getTodo();
       setInputValue("")
     } catch (error) {
       console.error("todo cannot be empty", error)
+      message.error("todo cannot be empty")
     }
   }
 
@@ -45,17 +48,21 @@ const TodoApp = () => {
     try {
       const deleteTodo = await axios.delete(`${BASE_URL}/delete-todo`)
       const one = deleteTodo.data?.res
+      message.success("todo deleted sucessfully")
       getTodo();
     } catch (error) {
       console.error("error deleting todo", error)
     }
   }
 
-  const editTodo = async () => {
+  const editTodo = async (id) => {
     event.preventDefault();
     try {
-      const editTodo = await axios.patch(`${BASE_URL}/edit-todo`)
-      const res1 = editTodo.data?.res
+      const editTodo = await axios.patch(`${BASE_URL}/edit-todo/${id}`, {
+        title: editText
+      })
+      const res1 = editTodo.data?.edited
+      setIsEditing(false);
       getTodo();
     } catch (error) {
       console.error("errro editing todo", error)
@@ -95,13 +102,12 @@ const TodoApp = () => {
           >
             Add Task
           </Button>
-
           <ul className='list-group'>
             {todos?.map((todo, index) => {
               return (
                 <div key={index} className="list-parent"
                 >
-                  {editId === todo.id ? (
+                  {editId === todo._id ? (
                     <>
                       <Input
                         className='edit-todo-input'
@@ -109,14 +115,25 @@ const TodoApp = () => {
                         placeholder='Edit Todo'
                         value={editText}
                       ></Input>
-                      <Button className='save-btn'>Save</Button>
+                      <Button
+                        onClick={() => {
+                          setEditText("")
+                          setEditId(null)
+                          editTodo(todo._id)
+                        }
+                        }
+                        className='save-btn'>Save</Button>
+
                     </>
                   ) : (
                     <li className='list-item'>{todo.title}
                       <div className="buttons-main">
                         <Button
                           icon={<MdEdit />}
-                          onClick={() => setEditId(todo.id)}
+                          onClick={() => {
+
+                            setEditId(todo._id)
+                          }}
                           className='edit-btn'
                         ></Button>
 
