@@ -11,7 +11,10 @@ let todos = []
 app.use(express.json())
 
 app.use(cors({
-    origin: 'http://localhost:5173'
+    origin: [
+        'http://localhost:5173',
+        'https://your-frontend-domain.vercel.app'
+    ]
 }));
 
 app.get("/get-all-todos", async (request, response) => {
@@ -27,9 +30,9 @@ app.post("/add-todo", async (request, response) => {
     response.status(200).send({ data: obj, message: "todo added sucessfully" })
 })
 
-app.patch("/edit-todo", async (request, response) => {
+app.patch("/edit-todo/:id", async (request, response) => {
     const id = request.params.id
-    const title = request.body
+    const { title } = request.body
     try {
         const edited = await Todo.findOneAndUpdate(
             { _id: id },
@@ -52,6 +55,4 @@ app.delete("/delete-todo", async (request, response) => {
     }
 })
 
-app.listen(PORT, () => {
-    console.log(`Server is running on ${PORT}`)
-})
+export default app
