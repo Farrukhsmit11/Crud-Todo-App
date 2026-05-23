@@ -52,10 +52,10 @@ const TodoApp = () => {
     }
   }
 
-  const deleteTodo = async () => {
+  const deleteTodo = async (id) => {
     event.preventDefault()
     try {
-      const deleteTodo = await axios.delete(`${getUrl()}/delete-todo`)
+      const deleteTodo = await axios.delete(`${getUrl()}/delete-todo/${id}`)
       const one = deleteTodo.data?.res
       message.success("todo deleted sucessfully")
       getTodo();
