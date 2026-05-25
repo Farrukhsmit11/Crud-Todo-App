@@ -15,21 +15,11 @@
   --instrument: "Instrument Sans", sans-serif
 }
 
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
-}
-
-.form-error {
-  display: block;
-  font-weight: 500;
-  font-size: 12.25px;
-  color: #db3030;
-  width: 100%;
-  margin-bottom: 10px;
 }
 
 body {
@@ -38,14 +28,4 @@ body {
 
 .ant-form-item {
   margin: 0 !important;
-}
-
-
-.form-error {
-  display: block;
-  font-weight: 500;
-  font-size: 12.25px;
-  color: #db3030;
-  width: 100%;
-  margin-bottom: 10px;
 }

@@ -7,13 +7,11 @@ import { useEffect } from 'react';
 import axios from "axios"
 import { PlusOutlined } from "@ant-design/icons"
 
-
 export const getUrl = () => {
   const isProduction = window.location.href.includes("https")
   const baseUrl = isProduction ?
     "https://crud-todo-app-three.vercel.app"
-    :
-    "http:localhost:3000"
+    : "http://localhost:3000"
   return baseUrl
 }
 
@@ -26,14 +24,9 @@ const TodoApp = () => {
   const [editId, setEditId] = useState(null);
   const [isEditing, setIsEditing] = useState(false)
 
-
-  const onSubmit = (values) => {
-    console.log(values);
-  }
-
   const getTodo = async () => {
     const response = await axios.get(`${getUrl()}/get-all-todos`)
-    const data = response?.data?.todoContent
+    const data = response?.data?.data
     setTodos(data)
   }
 
@@ -48,17 +41,17 @@ const TodoApp = () => {
       setInputValue("")
     } catch (error) {
       console.error("todo cannot be empty", error)
-      message.error("todo cannot be empty")
     }
   }
 
-  const deleteTodo = async (id) => {
+  const deleteTodo = async () => {
     event.preventDefault()
     try {
-      const deleteTodo = await axios.delete(`${getUrl()}/delete-todo/${id}`)
-      const one = deleteTodo.data?.res
-      message.success("todo deleted sucessfully")
+      const deleteTodo = await axios.delete(`${getUrl()}/delete-todo`)
+      const deletedData = deleteTodo.data?.data
       getTodo();
+      message.success("todo deleted sucessfully")
+
     } catch (error) {
       console.error("error deleting todo", error)
     }
@@ -70,8 +63,9 @@ const TodoApp = () => {
       const editTodo = await axios.patch(`${getUrl()}/edit-todo/${id}`, {
         title: editText
       })
-      const res1 = editTodo.data?.edited
+      const res1 = editTodo.data?.data
       setIsEditing(false);
+      message.success("todo edited sucessfully")
       getTodo();
     } catch (error) {
       console.error("errro editing todo", error)
@@ -122,17 +116,16 @@ const TodoApp = () => {
                         className='edit-todo-input'
                         onChange={(e) => setEditText(e.target.value)}
                         placeholder='Edit Todo'
-                        value={editText}
+                        defaultValue={todo.title}
                       ></Input>
                       <Button
+                        disabled={!editText}
                         onClick={() => {
                           setEditText("")
                           setEditId(null)
                           editTodo(todo._id)
-                        }
-                        }
+                        }}
                         className='save-btn'>Save</Button>
-
                     </>
                   ) : (
                     <li className='list-item'>{todo.title}
@@ -140,7 +133,6 @@ const TodoApp = () => {
                         <Button
                           icon={<MdEdit />}
                           onClick={() => {
-
                             setEditId(todo._id)
                           }}
                           className='edit-btn'
