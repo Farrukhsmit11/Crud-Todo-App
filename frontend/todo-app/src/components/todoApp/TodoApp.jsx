@@ -41,6 +41,7 @@ const TodoApp = () => {
       setInputValue("")
     } catch (error) {
       console.error("todo cannot be empty", error)
+      message.error("todo cannot be empty",)
     }
   }
 
