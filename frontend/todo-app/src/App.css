@@ -22,10 +22,29 @@
   font-family: "Poppins", sans-serif;
 }
 
-body {
-  background: linear-gradient(135deg, #153677, #4e085f);
+
+
+.form-input {
+  width: 100%;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid #DEEAFF;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  padding: 8.8px 16px;
 }
 
-.ant-form-item {
-  margin: 0 !important;
+
+a {
+  color: blue;
+  font-weight: 600;
+}
+
+.form-error {
+  display: block;
+  font-weight: 500;
+  font-size: 12.25px;
+  color: #db3030;
+  width: 100%;
+  margin-bottom: 10px;
 }

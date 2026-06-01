@@ -1,0 +1,6 @@
+.signup-card-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    margin-top: 28px;
+}

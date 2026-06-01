@@ -8,7 +8,7 @@ import axios from "axios"
 import { PlusOutlined } from "@ant-design/icons"
 import { CiEdit } from "react-icons/ci";
 import { FiTrash2 } from "react-icons/fi";
-import Loader from "../loader/Loader"
+import Loader from "../../components/loader/Loader"
 
 export const getUrl = () => {
   const isProduction = window.location.href.includes("https")
