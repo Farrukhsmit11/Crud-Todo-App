@@ -2,12 +2,13 @@ import React, { useState } from 'react'
 import "./TodoApp.css"
 import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
-import { Button, Form, Input, message } from "antd"
+import { Button, Form, Input, message, Spin } from "antd"
 import { useEffect } from 'react';
 import axios from "axios"
 import { PlusOutlined } from "@ant-design/icons"
 import { CiEdit } from "react-icons/ci";
 import { FiTrash2 } from "react-icons/fi";
+import Loader from "../loader/Loader"
 
 export const getUrl = () => {
   const isProduction = window.location.href.includes("https")
@@ -24,15 +25,23 @@ const TodoApp = () => {
   const [inputValue, setInputValue] = useState("");
   const [editText, setEditText] = useState("");
   const [editId, setEditId] = useState(null);
-  const [isEditing, setIsEditing] = useState(false)
+  const [isEditing, setIsEditing] = useState(false);
+  const [IsLoading, setIsLoading] = useState(true);
 
   const getTodo = async () => {
-    const response = await axios.get(`${getUrl()}/get-all-todos`)
-    const data = response?.data?.data
-    setTodos(data)
+    try {
+      const response = await axios.get(`${getUrl()}/get-all-todos`)
+      const data = response?.data?.data
+      setTodos(data)
+    } catch (error) {
+      console.error("error fetching todos", error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const addTodo = async () => {
+    setIsLoading(true)
     event.preventDefault();
     try {
       await axios.post(`${getUrl()}/add-todo`, {
@@ -42,8 +51,7 @@ const TodoApp = () => {
       getTodo();
       setInputValue("")
     } catch (error) {
-      console.error("todo cannot be empty", error)
-      message.error("todo cannot be empty",)
+      message.error("todo cannot be empty", error)
     }
   }
 
@@ -110,54 +118,62 @@ const TodoApp = () => {
             icon={<PlusOutlined />}
             className="add-task-btn"
             htmlType='submit'
+            // disabled={!inputValue}
           >
             Add Task
           </Button>
-          <ul className='list-group'>
-            {todos?.map((todo, index) => {
-              return (
-                <div key={index} className="list-parent"
-                >
-                  {editId === todo._id ? (
-                    <>
-                      <Input
-                        className='edit-todo-input'
-                        onChange={(e) => setEditText(e.target.value)}
-                        placeholder='Edit Todo'
-                        defaultValue={todo.title}
-                      ></Input>
-                      <Button
-                        disabled={!editText}
-                        onClick={() => {
-                          setEditText("")
-                          setEditId(null)
-                          editTodo(todo._id)
-                        }}
-                        className='save-btn'>Save</Button>
-                    </>
-                  ) : (
-                    <li className='list-item'>{todo.title}
-                      <div className="buttons-main">
-                        <Button
-                          icon={<MdEdit />}
-                          onClick={() => {
-                            setEditId(todo._id)
-                          }}
-                          className='edit-btn'
-                        ></Button>
 
-                        <Button
-                          icon={<FiTrash2 size={18} />}
-                          className='delete-btn'
-                          onClick={() => deleteTodo()}
-                        ></Button>
-                      </div>
-                    </li>
-                  )}
-                </div>
-              )
-            })}
-          </ul>
+          {IsLoading ? (
+            <Loader />
+          ) : (
+            <ul className='list-group'>
+              {todos?.map((todo, index) => {
+                return (
+                  <>
+                    <div key={index} className="list-parent"
+                    >
+                      {editId === todo._id ? (
+                        <>
+                          <Input
+                            className='edit-todo-input'
+                            onChange={(e) => setEditText(e.target.value)}
+                            placeholder='Edit Todo'
+                            defaultValue={todo.title}
+                          ></Input>
+                          <Button
+                            disabled={!editText}
+                            onClick={() => {
+                              setEditText("")
+                              setEditId(null)
+                              editTodo(todo._id)
+                            }}
+                            className='save-btn'>Save</Button>
+                        </>
+                      ) : (
+                        <li className='list-item'>{todo.title}
+                          <div className="buttons-main">
+                            <Button
+                              icon={<MdEdit />}
+                              onClick={() => {
+                                setEditId(todo._id)
+                              }}
+                              className='edit-btn'
+                            ></Button>
+
+                            <Button
+                              icon={<FiTrash2 size={18} />}
+                              className='delete-btn'
+                              onClick={() => deleteTodo()}
+                            ></Button>
+                          </div>
+                        </li>
+                      )}
+                    </div>
+                  </>
+                )
+              })}
+            </ul>
+          )}
         </Form>
       </div>
     </div >
