@@ -118,7 +118,7 @@ const TodoApp = () => {
             icon={<PlusOutlined />}
             className="add-task-btn"
             htmlType='submit'
-            // disabled={!inputValue}
+            disabled={!inputValue}
           >
             Add Task
           </Button>
