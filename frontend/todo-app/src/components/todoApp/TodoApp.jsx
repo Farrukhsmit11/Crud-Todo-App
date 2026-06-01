@@ -6,6 +6,8 @@ import { Button, Form, Input, message } from "antd"
 import { useEffect } from 'react';
 import axios from "axios"
 import { PlusOutlined } from "@ant-design/icons"
+import { CiEdit } from "react-icons/ci";
+import { FiTrash2 } from "react-icons/fi";
 
 export const getUrl = () => {
   const isProduction = window.location.href.includes("https")
@@ -80,7 +82,11 @@ const TodoApp = () => {
   return (
     <div className="todo-container">
       <div className="todo-card">
-        <h1 className="todo-title">Todo App</h1>
+        <div className="header">
+          <h1 className="todo-title">Todo App</h1>
+          <p className='todo-description'>Organize your tasks. Stay productive!</p>
+        </div>
+
         <Form
           onFinish={addTodo}
           layout='vertical'
@@ -92,6 +98,7 @@ const TodoApp = () => {
             <Input
               type="text"
               placeholder="What’s on your mind today?"
+              prefix={<CiEdit className='add-task-input-icon' />}
               className="todo-input"
               onChange={(e) => setInputValue(e.target.value)}
               value={inputValue}
@@ -140,7 +147,7 @@ const TodoApp = () => {
                         ></Button>
 
                         <Button
-                          icon={<MdDelete />}
+                          icon={<FiTrash2 size={18} />}
                           className='delete-btn'
                           onClick={() => deleteTodo()}
                         ></Button>
