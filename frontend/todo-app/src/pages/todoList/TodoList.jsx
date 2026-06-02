@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import "./TodoApp.css"
+import "./TodoList.css"
 import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 import { Button, Form, Input, message, Spin } from "antd"
@@ -18,7 +18,7 @@ export const getUrl = () => {
   return baseUrl
 }
 
-const TodoApp = () => {
+const TodoList = () => {
 
   const [form] = Form.useForm();
   const [todos, setTodos] = useState([])
@@ -181,4 +181,4 @@ const TodoApp = () => {
   )
 }
 
-export default TodoApp
+export default TodoList

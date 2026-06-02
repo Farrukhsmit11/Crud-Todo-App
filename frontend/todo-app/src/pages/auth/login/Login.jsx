@@ -65,6 +65,12 @@ const Login = () => {
                 </AntForm.Item>
 
                 <AntForm.Item
+                  validateStatus={errors.password && touched.password ? "error" : ""}
+                  help={
+                    errors.password && touched.password ? (
+                      <span className='form-error'>{errors.password}</span>
+                    ) : null
+                  }
                   label={<span className='form-label'>Password</span>}
                 >
                   <Input.Password

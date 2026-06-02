@@ -1,5 +1,5 @@
 import './App.css'
-import TodoApp from './pages/todoApp/TodoApp'
+import TodoList from './pages/todoList/TodoList'
 import { Routes, Route } from "react-router-dom"
 import { ForgotPassword, Login, SignUp } from "./pages"
 
@@ -9,7 +9,7 @@ function App() {
     <>
       <Routes>
         <Route path='/' element={<SignUp />}></Route>
-        <Route path='/todoList' element={<TodoApp />}></Route>
+        <Route path='/todoList' element={<TodoList />}></Route>
         <Route path='/Login' element={<Login />}></Route>
         <Route path='/forgotPassword' element={<ForgotPassword />}></Route>
       </Routes>

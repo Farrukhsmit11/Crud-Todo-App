@@ -44,6 +44,7 @@ const SignUp = () => {
                         <AntForm
                             layout='vertical'
                             form={form}
+                            onFinish={handleSubmit}
                         >
                             <AntForm.Item
                                 label={<span className='form-label'>Name</span>}
