@@ -17,6 +17,12 @@ const SignUp = () => {
 
     const navigate = useNavigate();
 
+    const onSubmit = (values, { resetForm }) => {
+        console.log("values", values)
+        resetForm();
+    }
+
+
     return (
         <div className='auth-container'>
             <div className="auth-card">
@@ -25,6 +31,7 @@ const SignUp = () => {
                 <Formik
                     initialValues={initialValues}
                     validationSchema={signUpSchema}
+                    onSubmit={onSubmit}
                 >
                     {({
                         handleSubmit,
@@ -43,7 +50,7 @@ const SignUp = () => {
                                 validateStatus={errors.name && touched.name ? "error" : ""}
                                 help={
                                     errors.name && touched.name ? (
-                                        <span>{errors.name}</span>
+                                        <span className='form-error'>{errors.name}</span>
                                     ) : null
                                 }
                             >
@@ -61,7 +68,7 @@ const SignUp = () => {
                                 validateStatus={errors.email && touched.email ? "error" : ""}
                                 help={
                                     errors.name && touched.name ? (
-                                        <span>{errors.email}</span>
+                                        <span className='form-error'>{errors.email}</span>
                                     ) : null
                                 }
                                 label={<span className='form-label'>Email</span>}
@@ -80,7 +87,7 @@ const SignUp = () => {
                                 validateStatus={errors.password && touched.password ? "error" : ""}
                                 help={
                                     errors.password && touched.password ? (
-                                        <span>{errors.password}</span>
+                                        <span className='form-error'>{errors.password}</span>
                                     ) : null
                                 }
                                 label={<span className='form-label'>Password</span>}
@@ -98,14 +105,13 @@ const SignUp = () => {
                             <div className="signup-card-footer">
                                 <Button
                                     type='primary'
-                                      htmlType='submit'
+                                    htmlType='submit'
                                     className='submit-btn'
                                 >Sign Up</Button>
 
                                 <Button
                                     onClick={() => navigate("/login")}
                                     type='primary'
-                                  
                                     className='submit-btn'
                                 >Log in</Button>
                             </div>

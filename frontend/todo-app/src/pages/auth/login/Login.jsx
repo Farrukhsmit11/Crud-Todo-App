@@ -15,7 +15,7 @@ const Login = () => {
   }
 
   const onSubmit = (values, { resetForm }) => {
-    console.log(values)
+    console.log("values", values)
     resetForm();
   }
 

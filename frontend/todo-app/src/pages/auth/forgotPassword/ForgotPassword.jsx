@@ -13,6 +13,13 @@ const ForgotPassword = () => {
         email: ""
     }
 
+
+    const onSubmit = (values, { resetForm }) => {
+        console.log("values", values)
+        resetForm();
+    }
+
+
     const navigate = useNavigate();
 
     return (
@@ -23,6 +30,7 @@ const ForgotPassword = () => {
                 <Formik
                     initialValues={initialValues}
                     validationSchema={forgotPasswordSchema}
+                    onSubmit={onSubmit}
                 >
                     {({
                         handleSubmit,

@@ -1,13 +1,12 @@
 import express, { response } from "express"
 import cors from "cors"
 import 'dotenv/config';
-import "./db/database.js"
 import { Todo } from "./models/Todo.js"
-import connectDB from "./db/database.js";
+import connectDB from "./config/db/db.js";
+import todoRoutes from "./routes/todoRoutes.js"
 
 const app = express();
 const PORT = process.env.PORT || 3000
-let todos = []
 
 app.use(express.json())
 
@@ -21,47 +20,12 @@ app.use(cors({
     credentials: true
 }));
 
+app.use(todoRoutes)
+
 app.get("/", (request, response) => {
     response.send("backend working")
 })
 
-app.get("/get-all-todos", async (request, response) => {
-    const data = await Todo.find()
-    response.send({ data })
-})
-
-app.post("/add-todo", async (request, response) => {
-    const obj = {
-        title: request.body.title,
-    }
-    const data = await Todo.create(obj)
-    response.status(200).send({ status: 200, data: obj, message: "todo added sucessfully" })
-})
-
-app.patch("/edit-todo/:id", async (request, response) => {
-    const id = request.params.id
-    const { title } = request.body
-    try {
-        const data = await Todo.findOneAndUpdate(
-            { _id: id },
-            { title },
-            { new: true }
-        )
-        response.status(200).send({ status: 200, data, message: "todo updated" })
-    } catch (error) {
-        console.error("error editing todo", error)
-    }
-})
-
-app.delete("/delete-todo", async (request, response) => {
-    const id = request.params.id
-    try {
-        const data = await Todo.findOneAndDelete(id)
-        response.status(200).send({ status: 200, message: "todo deleted" })
-    } catch (error) {
-        console.error("error", error)
-    }
-})
 app.listen(PORT, () => {
     console.log(`server is running on port ${PORT}`)
 })

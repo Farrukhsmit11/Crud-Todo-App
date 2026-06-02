@@ -7,7 +7,7 @@
 }
 
 .auth-card {
-    background: #F4F8FF;
+    background: #f1f1f1;;
     border: 1px solid #F4F8FF;
     padding: 30px;
     width: 100%;
@@ -21,7 +21,6 @@
     font-family: 'Poppins';
     font-weight: 600;
     margin-bottom: 25px;
-    line-height: 170%;
 }
 
 .form-footer {

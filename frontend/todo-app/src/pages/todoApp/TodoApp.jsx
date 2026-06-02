@@ -30,7 +30,7 @@ const TodoApp = () => {
 
   const getTodo = async () => {
     try {
-      const response = await axios.get(`${getUrl()}/get-all-todos`)
+      const response = await axios.get(`${getUrl()}/todos`)
       const data = response?.data?.data
       setTodos(data)
     } catch (error) {
@@ -44,7 +44,7 @@ const TodoApp = () => {
     setIsLoading(true)
     event.preventDefault();
     try {
-      await axios.post(`${getUrl()}/add-todo`, {
+      await axios.post(`${getUrl()}/add-todos`, {
         title: inputValue
       })
       message.success("Todo added sucessfully ")
@@ -58,7 +58,7 @@ const TodoApp = () => {
   const deleteTodo = async () => {
     event.preventDefault()
     try {
-      const deleteTodo = await axios.delete(`${getUrl()}/delete-todo`)
+      const deleteTodo = await axios.delete(`${getUrl()}/delete-todos`)
       const deletedData = deleteTodo.data?.data
       getTodo();
       message.success("todo deleted sucessfully")
@@ -71,7 +71,7 @@ const TodoApp = () => {
   const editTodo = async (id) => {
     event.preventDefault();
     try {
-      const editTodo = await axios.patch(`${getUrl()}/edit-todo/${id}`, {
+      const editTodo = await axios.patch(`${getUrl()}/edit-todos/${id}`, {
         title: editText
       })
       const res1 = editTodo.data?.data
