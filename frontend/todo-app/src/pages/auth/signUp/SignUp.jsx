@@ -1,13 +1,19 @@
 import { Formik } from 'formik'
-import React from 'react'
-import { Form as AntForm, Button, Checkbox, Input } from "antd"
+import React, { useState } from 'react'
+import { Form as AntForm, Button, Checkbox, Input, message } from "antd"
 import { signUpSchema } from "./SignUpSchema"
 import "./SignUp.css"
 import { useNavigate } from "react-router-dom"
+import axios from "axios"
 
 const SignUp = () => {
 
     const [form] = AntForm.useForm()
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const BASE_URL = "http://localhost:3000"
 
     const initialValues = {
         name: "",
@@ -22,6 +28,21 @@ const SignUp = () => {
         resetForm();
     }
 
+    const handleSignup = async () => {
+        try {
+            const addUser = await axios.post(`${BASE_URL}/signup`, {
+                name,
+                email,
+                password
+            })
+            const createdUser = addUser.data?.data
+            console.log("user created", createdUser)
+            message.success("Signup Sucessfull")
+            navigate("/login")
+        } catch (error) {
+            console.error("Error adding user", error)
+        }
+    }
 
     return (
         <div className='auth-container'>
@@ -36,7 +57,6 @@ const SignUp = () => {
                     {({
                         handleSubmit,
                         handleBlur,
-                        handleChange,
                         values,
                         errors,
                         touched
@@ -45,6 +65,8 @@ const SignUp = () => {
                             layout='vertical'
                             form={form}
                             onFinish={handleSubmit}
+                            method='POST'
+                            action="/signup"
                         >
                             <AntForm.Item
                                 label={<span className='form-label'>Name</span>}
@@ -56,9 +78,9 @@ const SignUp = () => {
                                 }
                             >
                                 <Input
-                                    onChange={handleChange}
+                                    onChange={(e) => setName(e.target.value)}
                                     onBlur={handleBlur}
-                                    value={values.name}
+                                    value={name}
                                     className='form-input'
                                     placeholder='Enter Name'
                                     name='name'
@@ -75,9 +97,9 @@ const SignUp = () => {
                                 label={<span className='form-label'>Email</span>}
                             >
                                 <Input
-                                    onChange={handleChange}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     onBlur={handleBlur}
-                                    value={values.email}
+                                    value={email}
                                     className='form-input'
                                     placeholder='Enter Email'
                                     name='email'
@@ -94,9 +116,9 @@ const SignUp = () => {
                                 label={<span className='form-label'>Password</span>}
                             >
                                 <Input
-                                    onChange={handleChange}
+                                    onChange={(e) => setPassword(e.target.value)}
                                     onBlur={handleBlur}
-                                    value={values.password}
+                                    value={password}
                                     className='form-input'
                                     placeholder='Enter Password'
                                     name='password'
@@ -105,6 +127,7 @@ const SignUp = () => {
 
                             <div className="signup-card-footer">
                                 <Button
+                                    onClick={() => handleSignup()}
                                     type='primary'
                                     htmlType='submit'
                                     className='submit-btn'
@@ -114,6 +137,7 @@ const SignUp = () => {
                                     onClick={() => navigate("/login")}
                                     type='primary'
                                     className='submit-btn'
+
                                 >Log in</Button>
                             </div>
                         </AntForm>
