@@ -1,13 +1,19 @@
 import React from 'react'
 import { Formik } from "formik"
 import { validationSchema } from './Validation'
-import { Form as AntForm, Button, Checkbox, Input } from "antd"
+import { Form as AntForm, Button, Checkbox, Input, message } from "antd"
 import "./Login.css"
 import { useNavigate } from "react-router-dom"
+import axios from "axios"
+import { useState } from 'react'
 
 const Login = () => {
 
   const [form] = AntForm.useForm();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const BASE_URL = "http://localhost:3000"
 
   const initialValues = {
     email: "",
@@ -20,6 +26,23 @@ const Login = () => {
   }
 
   const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    try {
+      const isLogin = await axios.post(`${BASE_URL}/login`, {
+        email,
+        password
+      })
+      message.success("Login Sucessfull")
+      navigate("/todoList")
+      setEmail("")
+      const loginUser = isLogin?.data?.result
+      console.log("login user", loginUser)
+    } catch (error) {
+      console.error("error login", error)
+    }
+  }
+
 
   return (
     <div className='auth-container'>
@@ -55,9 +78,9 @@ const Login = () => {
                   }
                 >
                   <Input
-                    onChange={handleChange}
+                    onChange={(e) => setEmail(e.target.value)}
                     onBlur={handleBlur}
-                    value={values.email}
+                    value={email}
                     className='form-input'
                     placeholder='Enter Email'
                     name='email'
@@ -74,9 +97,9 @@ const Login = () => {
                   label={<span className='form-label'>Password</span>}
                 >
                   <Input.Password
-                    onChange={handleChange}
+                    onChange={(e) => setPassword(e.target.value)}
                     onBlur={handleBlur}
-                    value={values.password}
+                    value={password}
                     className='form-input'
                     placeholder='Enter password'
                     name='password'
@@ -96,6 +119,7 @@ const Login = () => {
 
                 <div className="btn-main">
                   <Button
+                    onClick={() => handleLogin()}
                     type='primary'
                     className='submit-btn'
                     htmlType='submit'

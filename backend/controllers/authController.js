@@ -32,4 +32,17 @@ export const registerUser = async (request, response) => {
     }
 }
 
-export default { registerUser, getUsers }
+
+export const loginUser = async (request, response) => {
+    try {
+        const result = await User.findOne({ email: request.body.email })
+        if (!result) {
+            response.status(400).send({ message: "user not found" })
+        }
+        response.status(200).json({ message: "login sucessfully", data: result })
+    } catch (error) {
+        console.error("error login", error)
+    }
+}
+
+export default { registerUser, getUsers, loginUser }

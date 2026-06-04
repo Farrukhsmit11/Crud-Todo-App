@@ -38,6 +38,7 @@ const SignUp = () => {
             const createdUser = addUser.data?.data
             console.log("user created", createdUser)
             message.success("Signup Sucessfull")
+            setEmail("")
             navigate("/login")
         } catch (error) {
             console.error("Error adding user", error)
