@@ -42,12 +42,12 @@ export const registerUser = async (request, response) => {
 
 export const loginUser = async (request, response) => {
 
-    const result = await User.findOne({ email: request.body.email })
-
-    if (!request.body.email || request.body.password) {
+    if (!request.body.email || !request.body.password) {
         response.status(400).send({ message: "Please Fill all the fields" })
         return
     }
+
+    const result = await User.findOne({ email: request.body.email })
 
     if (!result) {
         response.status(400).send({ message: "user not found" })
