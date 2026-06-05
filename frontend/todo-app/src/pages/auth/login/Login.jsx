@@ -12,6 +12,8 @@ const Login = () => {
   const [form] = AntForm.useForm();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("")
+
 
   const BASE_URL = "http://localhost:3000"
 
@@ -19,6 +21,7 @@ const Login = () => {
     email: "",
     password: ""
   }
+
 
   const onSubmit = (values, { resetForm }) => {
     console.log("values", values)
@@ -29,16 +32,22 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const isLogin = await axios.post(`${BASE_URL}/login`, {
+      const response = await axios.post(`${BASE_URL}/login`, {
         email,
-        password
+        password,
       })
       message.success("Login Sucessfull")
+
       navigate("/todoList")
+
       setEmail("")
-      const loginUser = isLogin?.data?.result
-      console.log("login user", loginUser)
+
+      const loginUser = response?.data?.result
+
     } catch (error) {
+      if (error.response) {
+        message.error(error.response.data.message)
+      }
       console.error("error login", error)
     }
   }

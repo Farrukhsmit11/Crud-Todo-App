@@ -1,6 +1,7 @@
 import express, { response } from "express"
 import { User } from "../models/User.js"
 import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
 
 export const getUsers = async (request, response) => {
     try {
@@ -15,7 +16,7 @@ export const registerUser = async (request, response) => {
     try {
         const email = await User.findOne({ email: request.body.email })
         if (email) {
-            response.status(400).send({ message: "Email already exist" })
+            response.status(400).send({ message: "Sorry a user with this email already exist " })
             return
         }
 
@@ -26,23 +27,37 @@ export const registerUser = async (request, response) => {
             email: request.body.email,
             password: encryptedPassword
         })
+
         response.status(200).json({ message: "signup sucessfully", data: data })
+
     } catch (error) {
-        console.error("error", error)
+        console.error("Error creating user", error)
     }
 }
-
 
 export const loginUser = async (request, response) => {
-    try {
-        const result = await User.findOne({ email: request.body.email })
-        if (!result) {
-            response.status(400).send({ message: "user not found" })
-        }
-        response.status(200).json({ message: "login sucessfully", data: result })
-    } catch (error) {
-        console.error("error login", error)
+
+    const result = await User.findOne({ email: request.body.email })
+
+    if (!result) {
+        response.status(400).send({ message: "user not found" })
     }
+
+    const isPasswordValid = await bcrypt.compare(request.body.password, result.password)
+    if (!isPasswordValid) {
+        response.status(400).send({ message: "Incorrect Password" })
+    }
+
+    // Way to Create Token
+    const token = jwt.sign({
+        id: result._id,
+        email: result.email,
+        expiresIn: "1h"
+    },
+        process.env.JWT_SECRET_KEY)
+
+    response.status(200).json({ message: "login sucessfully", data: result, token })
 }
+
 
 export default { registerUser, getUsers, loginUser }

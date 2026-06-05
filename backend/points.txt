@@ -1,0 +1,23 @@
+Signup Flow points:
+
+step 1
+User s  hould be registeref first before login
+We have to create user first
+body
+name
+email
+password
+
+step2
+Condition:
+hum check krenge ke agar email nhi ha valid toh Sorry user with this email already exist matlab user phele is email se registred ha toh woh wapis registred nhi ho sakta. hus ko naya user banana parega. aur agar registred nhi ha aur valid toh signup sucessfull ayega.
+
+step 3 finally
+Password ko hash krwaenge due to security reasons by bcrypt hash method
+
+
+
+
+Forget Paswsword Flow
+forgot password krega user 
+hus ko email ayegi reset password ki woh wha ja ke password krega phir login krega
