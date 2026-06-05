@@ -16,7 +16,7 @@ export const addTodos = async (request, response) => {
             title: request.body.title
         }
         const data = await Todo.create(obj)
-        response.status(200).json({ data: data })
+        response.status(200).json({ message: "todo added sucessfully", data: data })
     } catch (error) {
         console.error("errior adding todo")
     }
@@ -26,7 +26,7 @@ export const deleteTodos = async (request, response) => {
     const id = request.params.id
     try {
         const data = await Todo.findOneAndDelete(id)
-        response.status(200).json({ data: data })
+        response.status(200).json({ message: "todo deleted sucessfully", data: data })
     } catch (error) {
         console.error("error deleting todo", error)
     }
@@ -42,7 +42,7 @@ export const editTodos = async (request, response) => {
             { title },
             { new: true }
         )
-        response.status(200).json({ data: data, message: "todo updated" })
+        response.status(200).json({ message: "todo updated", data: data })
     } catch (error) {
         console.error("error editing todo", error)
     }
