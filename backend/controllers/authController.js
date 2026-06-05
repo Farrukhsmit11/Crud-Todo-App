@@ -20,6 +20,11 @@ export const registerUser = async (request, response) => {
             return
         }
 
+        if (!request.body.name || !request.body.email || !request.body.password) {
+            response.status(400).send({ message: "Please Fill all The Fields" })
+            return
+        }
+
         const encryptedPassword = await bcrypt.hash(request.body.password, 10)
 
         const data = await User.create({
@@ -38,6 +43,11 @@ export const registerUser = async (request, response) => {
 export const loginUser = async (request, response) => {
 
     const result = await User.findOne({ email: request.body.email })
+
+    if (!request.body.email || request.body.password) {
+        response.status(400).send({ message: "Please Fill all the fields" })
+        return
+    }
 
     if (!result) {
         response.status(400).send({ message: "user not found" })

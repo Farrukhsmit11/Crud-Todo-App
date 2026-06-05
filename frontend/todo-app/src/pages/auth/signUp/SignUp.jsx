@@ -12,6 +12,7 @@ const SignUp = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [errorMessage, setErrorMessage] = useState("")
 
     const BASE_URL = "http://localhost:3000"
 
@@ -41,6 +42,10 @@ const SignUp = () => {
             setEmail("")
             navigate("/login")
         } catch (error) {
+            if (error.response) {
+                message.error(error.response.data.message)
+                console.log(error.response)
+            }
             console.error("Error adding user", error)
         }
     }
