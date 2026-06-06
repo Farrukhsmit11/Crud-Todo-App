@@ -32,10 +32,13 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post(`${BASE_URL}/login`, {
-        email,
-        password,
-      })
+      const response = await axios.post(`${BASE_URL}/login`,
+        {
+          email,
+          password,
+        },
+        { withCredentials: true },
+      )
       message.success("Login Sucessfull")
 
       navigate("/todoList")

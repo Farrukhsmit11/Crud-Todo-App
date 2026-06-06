@@ -16,7 +16,7 @@ export const registerUser = async (request, response) => {
     try {
         const email = await User.findOne({ email: request.body.email })
         if (email) {
-            response.status(400).send({ message: "Sorry a user with this email already exist " })
+            response.status(400).send({ message: "Sorry a user with this email already exist" })
             return
         }
 
@@ -33,7 +33,7 @@ export const registerUser = async (request, response) => {
             password: encryptedPassword
         })
 
-        response.status(200).json({ message: "signup sucessfully", data: data })
+        response.status(200).json({ message: "signup sucessfully", data: data, sucess: true })
 
     } catch (error) {
         console.error("Error creating user", error)
@@ -41,33 +41,48 @@ export const registerUser = async (request, response) => {
 }
 
 export const loginUser = async (request, response) => {
+    try {
+        if (!request.body.email || !request.body.password) {
+            response.status(400).send({ message: "Please Fill all the fields" })
+            return
+        }
 
-    if (!request.body.email || !request.body.password) {
-        response.status(400).send({ message: "Please Fill all the fields" })
-        return
+        const result = await User.findOne({ email: request.body.email })
+
+        if (!result) {
+            response.status(400).send({ message: "user not found" })
+        }
+
+        const isPasswordValid = await bcrypt.compare(request.body.password, result.password)
+        if (!isPasswordValid) {
+            response.status(400).send({ message: "Incorrect Password" })
+        }
+
+        const token = jwt.sign(
+            {
+                id: result._id,
+                email: result.email
+            },
+            process.env.JWT_SECRET_KEY,
+            {
+                expiresIn: "1hr"
+            }
+        );
+
+        response.cookie("token", token, {
+            expires:
+                new Date(Date.now() + 86400000),
+            secure: true,
+            httpOnly: true,
+            sameSite: "lax"
+        })
+
+        response.status(200).json({ message: "login sucessfully", data: result })
+    } catch (error) {
+        console.error("Login failed", error)
     }
-
-    const result = await User.findOne({ email: request.body.email })
-
-    if (!result) {
-        response.status(400).send({ message: "user not found" })
-    }
-
-    const isPasswordValid = await bcrypt.compare(request.body.password, result.password)
-    if (!isPasswordValid) {
-        response.status(400).send({ message: "Incorrect Password" })
-    }
-
-    // Way to Create Token
-    const token = jwt.sign({
-        id: result._id,
-        email: result.email,
-        expiresIn: "1h"
-    },
-        process.env.JWT_SECRET_KEY)
-
-    response.status(200).json({ message: "login sucessfully", data: result, token })
 }
+
 
 
 export default { registerUser, getUsers, loginUser }
