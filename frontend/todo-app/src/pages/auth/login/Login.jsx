@@ -84,10 +84,15 @@ const Login = () => {
                   label={<span className='form-label'> Email</span>}
                   validateStatus={errors.email && touched.email ? "error" : ""}
                   help={
-                    errors.email && touched.email ? (
-                      <span className='form-error'>{errors.email}</span>
-                    ) : null
+                    touched.email && errors.email && (
+                      <span>{errors.email}</span>
+                    )
                   }
+                // help={
+                //   errors.email && touched.email ? (
+                //     <span className='form-error'>{errors.email}</span>
+                //   ) : null
+                // }
                 >
                   <Input
                     onChange={(e) => setEmail(e.target.value)}

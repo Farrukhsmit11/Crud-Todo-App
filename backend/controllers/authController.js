@@ -3,15 +3,6 @@ import { User } from "../models/User.js"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 
-export const getUsers = async (request, response) => {
-    try {
-        const data = await User.find()
-        response.status(200).json({ data })
-    } catch (error) {
-        console.error("error fetching users")
-    }
-}
-
 export const registerUser = async (request, response) => {
     try {
         const email = await User.findOne({ email: request.body.email })
@@ -83,6 +74,4 @@ export const loginUser = async (request, response) => {
     }
 }
 
-
-
-export default { registerUser, getUsers, loginUser }
+export default { registerUser, loginUser }

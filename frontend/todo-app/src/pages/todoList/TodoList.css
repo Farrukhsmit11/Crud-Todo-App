@@ -161,3 +161,15 @@
     padding: 12px 20px;
     cursor: pointer;
 }
+
+.logout-main {
+    display: flex;
+    justify-content: end;
+}
+
+.logout-btn {
+    padding: 16px;
+    font-family: 'Poppins';
+    font-weight: 600;
+    color: indianred;
+}

@@ -9,6 +9,8 @@ import { PlusOutlined } from "@ant-design/icons"
 import { CiEdit } from "react-icons/ci";
 import { FiTrash2 } from "react-icons/fi";
 import Loader from "../../components/loader/Loader"
+import { CiLogout } from "react-icons/ci";
+import { useNavigate } from "react-router-dom"
 
 export const getUrl = () => {
   const isProduction = window.location.href.includes("https")
@@ -87,10 +89,21 @@ const TodoList = () => {
     getTodo()
   }, [])
 
+
+  const navigate = useNavigate()
+
   return (
     <div className="todo-container">
       <div className="todo-card">
         <div className="header">
+
+          <div className="logout-main">
+            <Button
+              onClick={() => navigate("/login")}
+              icon={<CiLogout />}
+              className='logout-btn'
+            >Logout</Button>
+          </div>
           <h1 className="todo-title">Todo App</h1>
           <p className='todo-description'>Organize your tasks. Stay productive!</p>
         </div>
@@ -124,7 +137,7 @@ const TodoList = () => {
           </Button>
 
           {IsLoading ? (
-            <Loader />
+            <Spin size="medium" tip="Loading, please wait..." />
           ) : (
             <ul className='list-group'>
               {todos?.map((todo, index) => {
