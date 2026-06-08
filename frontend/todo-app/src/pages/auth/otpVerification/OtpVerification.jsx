@@ -75,7 +75,7 @@ const OtpVerification = () => {
                             </div>
 
                             <div className="countdown-timer">
-                                <span>The Resend OTP will expire in 10 minutes  </span>
+                                <span className="form-description">The Resend OTP will expire in 10 minutes  </span>
                             </div>
                         </AntForm>
                     )

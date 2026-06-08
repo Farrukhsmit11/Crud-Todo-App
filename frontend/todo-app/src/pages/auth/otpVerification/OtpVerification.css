@@ -32,3 +32,8 @@
     border-color: #6E8CFB;
     box-shadow: 0 0 0 4px rgba(110, 140, 251, 0.3);
 }
+
+.form-description {
+    font-family: 'Poppins';
+    font-weight: 500;
+}
