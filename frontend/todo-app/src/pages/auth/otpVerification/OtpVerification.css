@@ -13,3 +13,22 @@
     margin-top: 16px;
     text-align: center;
 }
+
+.otp-input {
+    width: 32px;
+    height: 40px;
+    border: 1px solid #6E8CFB;
+    background: aquamarine;
+    border-radius: 8px;
+    transition: box-shadow 0.2s ease;
+}
+
+.otp-input .ant-input:hover {
+    border-color: #d9d9d9;
+}
+
+.otp-input .ant-input:focus,
+.otp-input .ant-input-focused {
+    border-color: #6E8CFB;
+    box-shadow: 0 0 0 4px rgba(110, 140, 251, 0.3);
+}

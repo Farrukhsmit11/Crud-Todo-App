@@ -4,13 +4,11 @@ import "./OtpVerification.css"
 import { otpSchema } from "./OtpSchema"
 import { useState } from "react"
 import OTP from "antd/es/input/OTP"
-import { createStaticStyles } from 'antd-style';
-
 
 const OtpVerification = () => {
 
     const [form] = AntForm.useForm()
-    const [verify, setVerify] = useState("")
+    const [otpInput, setOtpInput] = useState("")
 
     const initialValues = {
         otpInput: ""
@@ -20,36 +18,6 @@ const OtpVerification = () => {
         console.log("values", values)
         resetForm()
     }
-
-    const styles = createStaticStyles(({ css, cssVar }) => ({
-        root: css`
-    border-width: ${cssVar.lineWidth};
-    border-radius: ${cssVar.borderRadius};
-    transition: box-shadow ${cssVar.motionDurationMid};
-    &:hover {
-      border: 1px solid #d9d9d9;
-    }
-    &:focus-visible {
-      border-color: lab(66.128% 0 0);
-      box-shadow: 0 0 0 4px color-mix(in oklab, lab(66.128% 0 0) 50%, transparent);
-    }
-  `,
-    }));
-
-    const stylesFnOTP = info => {
-        if (info.props.size === 'medium') {
-            return {
-                input: {
-                    borderColor: '#6E8CFB',
-                    width: 32,
-                },
-            };
-        }
-
-    }
-
-    const classNames = styles;
-
 
     return (
         <div className="auth-container">
@@ -86,7 +54,15 @@ const OtpVerification = () => {
                                     ) : null
                                 }
                             >
-                                <OTP classNames={classNames} styles={stylesFnOTP} size="medium" length={6} separator="*" />
+                                <Input.OTP
+                                    classNames="otp-input"
+                                    size="medium"
+                                    length={6}
+                                    separator="-"
+                                    value={otpInput}
+                                    onChange={handleChange}
+                                    name="otpInput"
+                                />
 
                             </AntForm.Item>
 
