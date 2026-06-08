@@ -41,7 +41,7 @@ const Login = () => {
       )
       message.success("Login Sucessfull")
 
-      navigate("/todoList")
+      navigate("/otpVerification")
 
       setEmail("")
 
@@ -88,11 +88,6 @@ const Login = () => {
                       <span>{errors.email}</span>
                     )
                   }
-                // help={
-                //   errors.email && touched.email ? (
-                //     <span className='form-error'>{errors.email}</span>
-                //   ) : null
-                // }
                 >
                   <Input
                     onChange={(e) => setEmail(e.target.value)}
@@ -136,7 +131,10 @@ const Login = () => {
 
                 <div className="btn-main">
                   <Button
-                    onClick={() => handleLogin()}
+                    onClick={() => {
+                      handleLogin()
+                    }
+                    }
                     type='primary'
                     className='submit-btn'
                     htmlType='submit'

@@ -49,6 +49,7 @@ const ResetPassword = () => {
 
 
               <AntForm.Item
+                
                 label={<span className='form-label'>Confirm Password</span>}
               >
                 <Input.Password

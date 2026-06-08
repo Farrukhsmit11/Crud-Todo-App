@@ -1,0 +1,15 @@
+.otp-form-title {
+    font-size: 25px;
+    font-family: 'Poppins';
+    font-weight: 600;
+    margin-bottom: 9px;
+}
+
+.otp-form-header {
+    margin-bottom: 36px;
+}
+
+.countdown-timer {
+    margin-top: 16px;
+    text-align: center;
+}

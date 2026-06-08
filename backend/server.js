@@ -6,6 +6,7 @@ import { User } from "./models/User.js";
 import connectDB from "./config/db/db.js";
 import todoRoutes from "./routes/todoRoutes.js"
 import authRoutes from "./routes/authRoutes.js"
+import transporter from "./services/emailService.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000
