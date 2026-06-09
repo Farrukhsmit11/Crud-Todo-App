@@ -85,7 +85,7 @@ const Login = () => {
                   validateStatus={errors.email && touched.email ? "error" : ""}
                   help={
                     touched.email && errors.email && (
-                      <span>{errors.email}</span>
+                      <span className='form-error'>{errors.email}</span>
                     )
                   }
                 >

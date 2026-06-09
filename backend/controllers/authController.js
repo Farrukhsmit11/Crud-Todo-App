@@ -3,6 +3,10 @@ import { User } from "../models/User.js"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import transporter from "../services/emailService.js"
+import otpTemplate from "../templates/otpTemplate.js"
+import generateOtp from "../utils/generateOtp.js"
+import signupTemplate from "../templates/signupTemplate.js"
+import { Otp } from "../models/Otp.js"
 
 export const registerUser = async (request, response) => {
 
@@ -28,51 +32,15 @@ export const registerUser = async (request, response) => {
             password: encryptedPassword
         })
 
+
+
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
             to: userEmail,
             subject: "Welcome to Todo List",
             text: `Hello ${name}. Welcome To Todo-List Website. Your account has been created sucessfully 🎉 with the ${userEmail}`,
-            html: `
-  <div style="margin:0;padding:0;background:#f4f6f8;font-family:Arial,sans-serif;">
-    
-    <div style="max-width:600px;margin:40px auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,0.08);">
-      
-      <div style="background:linear-gradient(135deg,#4f46e5,#06b6d4);padding:30px;text-align:center;color:white;">
-        <h1 style="margin:0;font-size:24px;">Welcome Aboard 🚀</h1>
-        <p style="margin:5px 0 0;font-size:14px;opacity:0.9;">Your account has been 
-        created successfully</p>
-      </div>
-
-      <div style="padding:30px;color:#333;">
-        <h2 style="margin-top:0;">Hi there 👋</h2>
-        
-        <p style="font-size:15px;line-height:1.6;">
-          Thanks for signing up! We're excited to have you on board.
-           Your account is now active and ready to use.
-        </p>
-
-        <div style="background:#f9fafb;border:1px solid #e5e7eb;padding:15px;border-radius:8px;margin:20px 0;">
-          <p style="margin:0;font-size:14px;">
-            <strong>Email:</strong> ${userEmail}
-          </p>
-        </div>
-
-        <p style="font-size:15px;line-height:1.6;">
-          You can now log in and 
-          start exploring all features.
-        </p>
-
-        <div style="text-align:center;margin:30px 0;">
-         <a href="http://localhost:5173/login"
-         style="background:#4f46e5;color:#fff;padding:12px 24px;text-decoration:none;border-radius:8px;font-size:14px;    display:inline-block;"
-        >
-        Go to Login
-        </a>
-        </div>
-    </div>
-  </div>
-  ` }
+            html: signupTemplate(userEmail)
+        }
 
         await transporter.sendMail(mailOptions);
 
@@ -84,6 +52,9 @@ export const registerUser = async (request, response) => {
 }
 
 export const loginUser = async (request, response) => {
+
+    const { email: userEmail } = request.body
+
     try {
         if (!request.body.email || !request.body.password) {
             response.status(400).send({ message: "Please Fill all the fields" })
@@ -120,7 +91,23 @@ export const loginUser = async (request, response) => {
             sameSite: "lax"
         })
 
-        response.status(200).json({ message: "login sucessfully", data: result })
+        const otp = generateOtp()
+
+        await Otp.create({ userEmail, otp })
+
+        const sendEmail = {
+            from: process.env.SENDER_EMAIL,
+            to: userEmail,
+            id: result._id
+            email: result.email,
+            subject: "Verify your email",
+            html: otpTemplate(otp),
+            text: `Your OTP is ${generatedOtp}. It will expire in 5 minutes.`
+        }
+
+        await transporter.sendMail(sendEmail)
+
+        response.status(200).json({ message: "Credentials valid. OTP sent", data: result })
     } catch (error) {
         return response.json({ sucess: false, message: error.message })
         console.error("Login failed", error)
