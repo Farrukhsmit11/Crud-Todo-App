@@ -1,12 +1,13 @@
 import express, { request, response, text } from "express"
 import { User } from "../models/User.js"
-import bcrypt from "bcrypt"
+import bcrypt, { hash } from "bcrypt"
 import jwt from "jsonwebtoken"
 import transporter from "../services/emailService.js"
 import otpTemplate from "../templates/otpTemplate.js"
-import generateOtp from "../utils/generateOtp.js"
 import signupTemplate from "../templates/signupTemplate.js"
 import { Otp } from "../models/Otp.js"
+import { generateOtp } from "../utils/helper.js"
+import crypto from "crypto"
 
 export const registerUser = async (request, response) => {
 
@@ -31,9 +32,6 @@ export const registerUser = async (request, response) => {
             email: request.body.email,
             password: encryptedPassword
         })
-
-
-
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
             to: userEmail,
@@ -53,7 +51,7 @@ export const registerUser = async (request, response) => {
 
 export const loginUser = async (request, response) => {
 
-    const { email: userEmail } = request.body
+    const { email: userEmail, password } = request.body
 
     try {
         if (!request.body.email || !request.body.password) {
@@ -95,7 +93,18 @@ export const loginUser = async (request, response) => {
 
         const otp = generateOtp()
 
-        await Otp.create({ userEmail, otp })
+        const otpHash = await bcrypt.hashSync(otp.toString(), 10)
+
+        const isValid = await bcrypt.compareSync(otp.toString(), otpHash)
+        if (!isValid) {
+            response.status(400).send({ message: "Invalid Otp" })
+        }
+
+        const data = await Otp.create({
+            userId: result._id,
+            otp: otpHash,
+            email: result.email
+        })
 
         const sendEmail = {
             from: process.env.SENDER_EMAIL,
@@ -115,5 +124,4 @@ export const loginUser = async (request, response) => {
         console.error("Login failed", error)
     }
 }
-
 export default { registerUser, loginUser }
