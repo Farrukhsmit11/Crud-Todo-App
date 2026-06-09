@@ -98,7 +98,7 @@ export const loginUser = async (request, response) => {
         const sendEmail = {
             from: process.env.SENDER_EMAIL,
             to: userEmail,
-            id: result._id
+            id: result._id,
             email: result.email,
             subject: "Verify your email",
             html: otpTemplate(otp),
