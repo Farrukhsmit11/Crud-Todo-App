@@ -65,11 +65,13 @@ export const loginUser = async (request, response) => {
 
         if (!result) {
             response.status(400).send({ message: "user not found" })
+            return
         }
 
         const isPasswordValid = await bcrypt.compare(request.body.password, result.password)
         if (!isPasswordValid) {
             response.status(400).send({ message: "Incorrect Password" })
+            return
         }
 
         const token = jwt.sign(
@@ -86,7 +88,7 @@ export const loginUser = async (request, response) => {
         response.cookie("token", token, {
             expires:
                 new Date(Date.now() + 86400000),
-            secure: true,
+            secure: process.env.NODE_ENV === "production",
             httpOnly: true,
             sameSite: "lax"
         })
@@ -102,7 +104,7 @@ export const loginUser = async (request, response) => {
             email: result.email,
             subject: "Verify your email",
             html: otpTemplate(otp),
-            text: `Your OTP is ${generatedOtp}. It will expire in 5 minutes.`
+            text: `Your OTP is ${otp}. It will expire in 5 minutes.`
         }
 
         await transporter.sendMail(sendEmail)
