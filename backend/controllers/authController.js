@@ -6,7 +6,7 @@ import transporter from "../services/emailService.js"
 import otpTemplate from "../templates/otpTemplate.js"
 import signupTemplate from "../templates/signupTemplate.js"
 import { Otp } from "../models/Otp.js"
-import { generateOtp } from "../utils/helper.js"
+import { generateOtp, getOtpHtml } from "../utils/helper.js"
 import crypto from "crypto"
 
 export const registerUser = async (request, response) => {
@@ -95,20 +95,16 @@ export const loginUser = async (request, response) => {
 
         const otpHash = await bcrypt.hashSync(otp.toString(), 10)
 
-        const isValid = await bcrypt.compareSync(otp.toString(), otpHash)
-        if (!isValid) {
-            response.status(400).send({ message: "Invalid Otp" })
-        }
 
         const data = await Otp.create({
-            userId: result._id,
+            id: result._id,
             otp: otpHash,
             email: result.email
         })
 
         const sendEmail = {
             from: process.env.SENDER_EMAIL,
-            to: userEmail,
+            to: result.email,
             id: result._id,
             email: result.email,
             subject: "Verify your email",
