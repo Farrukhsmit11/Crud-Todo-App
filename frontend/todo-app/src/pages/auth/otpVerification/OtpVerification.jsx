@@ -2,21 +2,29 @@ import { Form as AntForm, Button, Input, message } from "antd"
 import { Formik } from "formik"
 import "./OtpVerification.css"
 import { otpSchema } from "./OtpSchema"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import OTP from "antd/es/input/OTP"
 import axios from "axios"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 
 const OtpVerification = () => {
 
     const [form] = AntForm.useForm();
     const [otp, setOtp] = useState("");
-    const [email , setEmail] = useState("")
+    const [fieldValue, setFieldValue] = useState("");
+    const [email, setEmail] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
+    const location = useLocation();
+ 
+    const userEmail = location.state?.email
+
     const initialValues = {
-        otpInput: ""
+        email,
+        otp: ""
     }
+
+    const navigate = useNavigate();
 
     const handleFormSubmit = (values, { resetForm }) => {
         console.log("values", values)
@@ -25,14 +33,14 @@ const OtpVerification = () => {
 
     const BASE_URL = "http://localhost:3000"
 
-    const navigate = useNavigate();
-
     const handleVerifyOtp = async () => {
         try {
             const response = await axios.post(`${BASE_URL}/verify-otp`, {
-                email,
-                otp
-            })
+                otp,
+                email: userEmail
+            },
+                { withCredentials: true }
+            )
             const isVerified = response?.data?.data
             message.success("OTP Verified")
             navigate("/todoList")
@@ -48,7 +56,7 @@ const OtpVerification = () => {
         <div className="auth-container">
             <div className="auth-card">
                 <div className="otp-form-header">
-                    <h1 className="otp-form-title">Verify Your Account</h1>
+                    <h1 className="otp-form-title">Verify OTP</h1>
                     <p>We've sent a 6-digit code to email</p>
                 </div>
 
@@ -72,10 +80,10 @@ const OtpVerification = () => {
                             onFinish={handleSubmit}
                         >
                             <AntForm.Item
-                                validateStatus={errors.otpInput && touched.otpInput ? "error" : ""}
+                                validateStatus={errors.otp && touched.otp ? "error" : ""}
                                 help={
-                                    errors.otpInput && touched.otpInput ? (
-                                        <span>{errors.otpInput}</span>
+                                    errors.otp && touched.otp ? (
+                                        <span>{errors.otp}</span>
                                     ) : null
                                 }
                             >
@@ -84,9 +92,9 @@ const OtpVerification = () => {
                                     size="medium"
                                     length={6}
                                     separator="-"
-                                    onChange={(e) => setOtp(e.target.value)}
-                                    value={otp}
-                                    name="otpInput"
+                                    onChange={(value) => setOtp(value)}
+                                    value={values.otp}
+                                    name="otp"
                                 />
 
                             </AntForm.Item>

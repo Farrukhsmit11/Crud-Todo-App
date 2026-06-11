@@ -2,10 +2,6 @@ import mongoose from "mongoose";
 
 const otpSchema = new mongoose.Schema({
 
-    userId: {
-        type: String
-    },
-
     otp: {
         type: String,
         required: true
@@ -14,7 +10,7 @@ const otpSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true
-    }
+    },
 },
     { timestamps: true },
 )

@@ -7,13 +7,12 @@ import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { useState } from 'react'
 
-const Login = () => {
+const Login = ({ userEmail }) => {
 
   const [form] = AntForm.useForm();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("")
-
 
   const BASE_URL = "http://localhost:3000"
 
@@ -39,9 +38,10 @@ const Login = () => {
         },
         { withCredentials: true },
       )
-      message.success("Login Sucessfull")
+      // message.success("Login Sucessfull")  
 
-      navigate("/otpVerification")
+      navigate("/otpVerification", { state: { email } })
+      message.success(`We have sent 6 digit OTP To ${email} for Verification`)
 
       setEmail("")
 
