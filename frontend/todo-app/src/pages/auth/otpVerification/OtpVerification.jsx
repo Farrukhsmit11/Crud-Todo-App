@@ -16,7 +16,7 @@ const OtpVerification = () => {
     const [errorMessage, setErrorMessage] = useState("");
 
     const location = useLocation();
- 
+
     const userEmail = location.state?.email
 
     const initialValues = {
@@ -100,10 +100,15 @@ const OtpVerification = () => {
                             </AntForm.Item>
 
                             <div className="verification-footer">
+
                                 <Button
-                                    htmlType="submit"
-                                    className="submit-btn"
                                     onClick={() => handleVerifyOtp()}
+                                    className="verify-otp-btn"
+                                    htmlType="submit"
+                                >Verify</Button>
+
+                                <Button
+                                    className="submit-btn"
                                 >Resend OTP
                                 </Button>
                             </div>

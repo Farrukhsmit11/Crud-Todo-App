@@ -37,3 +37,20 @@
     font-family: 'Poppins';
     font-weight: 500;
 }
+
+.verification-footer {
+    display: flex;
+    gap: 14px;
+    flex-direction: column;
+    margin-top: 40px;
+}
+
+.verify-otp-btn {
+    width: 100%;
+    padding: 19px;
+    font-family: 'Poppins';
+    font-weight: 600;
+    border-radius: 19px;
+    background: #060708;
+    color: white;
+}
