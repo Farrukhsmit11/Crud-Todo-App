@@ -36,6 +36,9 @@
 .form-description {
     font-family: 'Poppins';
     font-weight: 500;
+    display: flex;
+    gap: 6px;
+    justify-content: center;
 }
 
 .verification-footer {
