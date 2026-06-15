@@ -152,7 +152,7 @@ export const forgotPassword = async (request, response) => {
             { expiresIn: "1d" }
         )
 
-        const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+        const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`
 
         const emailOptions = {
             from: process.env.SENDER_EMAIL,
