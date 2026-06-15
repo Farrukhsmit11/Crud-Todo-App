@@ -5,8 +5,9 @@ import jwt from "jsonwebtoken"
 import transporter from "../services/emailService.js"
 import otpTemplate from "../templates/otpTemplate.js"
 import signupTemplate from "../templates/signupTemplate.js"
+import forgotPasswordTemplate from "../templates/forgotPasswordTempalte.js"
 import { Otp } from "../models/Otp.js"
-import { generateOtp, getOtpHtml } from "../utils/helper.js"
+import { generateOtp } from "../utils/helper.js"
 import crypto from "crypto"
 
 export const registerUser = async (request, response) => {
@@ -95,6 +96,10 @@ export const loginUser = async (request, response) => {
 
         const otpHash = await bcrypt.hashSync(otp.toString(), 10)
 
+        if (result.expiresTime < Date.now()) {
+            response.status(400).send({ message: "OTP Expired]" })
+            return
+        }
 
         const data = await Otp.create({
             id: result._id,
@@ -102,7 +107,6 @@ export const loginUser = async (request, response) => {
             email: result.email,
             expiresTime: new Date(Date.now() + 5 * 60 * 1000)
         })
-
 
         const sendEmail = {
             from: process.env.SENDER_EMAIL,
@@ -122,4 +126,81 @@ export const loginUser = async (request, response) => {
         console.error("Login failed", error)
     }
 }
-export default { registerUser, loginUser }
+
+
+export const forgotPassword = async (request, response) => {
+
+    const { email } = request.body
+
+    try {
+        if (!email) {
+            response.status(400).send({ message: "Email is required" })
+            return
+        }
+
+        const data = await User.findOne({ email })
+        if (!data) {
+            response.status(400).send({ message: "user not found" })
+            return
+        }
+
+        const resetToken = jwt.sign({
+            id: data.id,
+            email: data.email
+        },
+            process.env.JWT_SECRET_KEY,
+            { expiresIn: "1d" }
+        )
+
+        const resetUrl = `http://localhost:5173/resetPassword?${resetToken}`
+
+        const emailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: email,
+            id: data.email,
+            email: data.email,
+            subject: "Reset Password for Email Verification",
+            html: forgotPasswordTemplate({ resetUrl })
+        }
+
+        await transporter.sendMail(emailOptions)
+
+        response.status(200).json({ message: "Reset Password Mail send Sucessfully", data, resetToken })
+
+    } catch (error) {
+        console.error("error", error)
+    }
+}
+
+
+export const resetPassword = async (request, response) => {
+
+    const { token } = request.params
+    const { newPassword, confirmPassword } = request.body
+
+    try {
+
+        if (!newPassword || !confirmPassword) {
+            response.status(400).send({ message: "newPassword and Confirm Password missing" })
+            return
+        }
+
+        const data = await User.findOne({
+            resetToken: token
+        })
+
+        const salt = 10
+        const hashedPassword = await bcrypt.hash(newPassword, salt)
+
+        data.password = hashedPassword
+        await data.save()
+
+        response.status(200).send({ message: "Password reset sucessfully", data, token })
+
+    } catch (error) {
+        console.error("error reseting password", error)
+    }
+
+}
+
+export default { registerUser, loginUser, forgotPassword, resetPassword }

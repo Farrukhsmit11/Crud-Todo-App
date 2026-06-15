@@ -38,8 +38,7 @@ const Login = ({ userEmail }) => {
         },
         { withCredentials: true },
       )
-      // message.success("Login Sucessfull")  
-
+      
       navigate("/otpVerification", { state: { email } })
       message.success(`We have sent 6 digit OTP To ${email} for Verification`)
 

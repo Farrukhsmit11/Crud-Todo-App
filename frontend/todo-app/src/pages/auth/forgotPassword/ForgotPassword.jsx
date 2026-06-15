@@ -1,88 +1,107 @@
 import { Formik } from 'formik'
 import React from 'react'
 import { forgotPasswordSchema } from './ForgotPasswordSchema'
-import { Form as AntForm, Button, Checkbox, Input } from "antd"
+import { Form as AntForm, Button, Checkbox, Input, message } from "antd"
 import "./ForgotPassword.css"
 import { useNavigate } from "react-router-dom"
+import axios from "axios"
+import { useState } from 'react'
 
 const ForgotPassword = () => {
 
     const [form] = AntForm.useForm();
+    const [email, setEmail] = useState("");
 
     const initialValues = {
         email: ""
     }
-
 
     const onSubmit = (values, { resetForm }) => {
         console.log("values", values)
         resetForm();
     }
 
+    const BASE_URL = "http://localhost:3000"
+
+    const handleForgotPassword = async () => {
+        try {
+            const response = await axios.post(`${BASE_URL}/forgot-password`, {
+                email
+            })
+            const data = response?.data.data
+            message.success(`Reset Password Email Send Sucessfully to ${email}`)
+            form.resetFields();
+        } catch (error) {
+            if (error.response) {
+                message.error(error.response.data.message)
+            }
+            console.error("error sending reset email", error)
+        }
+
+    }
 
     const navigate = useNavigate();
 
     return (
-        <div className='auth-container'>
-            <div className="auth-card">
-                <h1 className='auth-title'>Forgot Password?</h1>
+        <>
 
-                <Formik
-                    initialValues={initialValues}
-                    validationSchema={forgotPasswordSchema}
-                    onSubmit={onSubmit}
-                >
-                    {({
-                        handleSubmit,
-                        handleBlur,
-                        handleChange,
-                        values,
-                        errors,
-                        touched,
-                    }) => (
-                        <AntForm
-                            form={form}
-                            layout='vertical'
-                            onFinish={handleSubmit}
-                        >
-                            <AntForm.Item
-                                label={<span className='form-label'> Email</span>}
-                                validateStatus={errors.email && touched.email ? "error" : ""}
-                                help={
-                                    errors.email && touched.email ? (
-                                        <span className='form-error'>{errors.email}</span>
-                                    ) : null
-                                }
+
+            <div className='auth-container'>
+                <div className="auth-card">
+                    <h1 className='auth-title'>Forgot Password?</h1>
+
+                    <Formik
+                        initialValues={initialValues}
+                        validationSchema={forgotPasswordSchema}
+                        onSubmit={onSubmit}
+                    >
+                        {({
+                            handleSubmit,
+                            handleBlur,
+                            handleChange,
+                            values,
+                            errors,
+                            touched,
+                        }) => (
+                            <AntForm
+                                form={form}
+                                layout='vertical'
+                                onFinish={handleSubmit}
                             >
-                                <Input
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.email}
-                                    className='form-input'
-                                    placeholder='Enter Email'
-                                    name='email'
-                                ></Input>
-                            </AntForm.Item>
+                                <AntForm.Item
+                                    label={<span className='form-label'> Email</span>}
+                                >
+                                    <Input
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        onBlur={handleBlur}
+                                        value={email}
+                                        className='form-input'
+                                        placeholder='Enter Email'
+                                        name='email'
+                                    ></Input>
+                                </AntForm.Item>
 
-                            <div className="forgot-password-card-footer">
-                                <Button
-                                    type='primary'
-                                    htmlType='submit'
-                                    className='resend-email-btn'
-                                >Resend Email</Button>
+                                <div className="forgot-password-card-footer">
+                                    <Button
+                                        onClick={() => handleForgotPassword()}
+                                        type='primary'
+                                        htmlType='submit'
+                                        className='resend-email-btn'
+                                    >Send Email</Button>
 
-                                <Button
-                                    onClick={() => navigate("/login")}
-                                    type='primary'
-                                    className='resend-email-btn'
-                                >Login</Button>
-                            </div>
-                        </AntForm>
-                    )
-                    }
-                </Formik>
+                                    <Button
+                                        onClick={() => navigate("/login")}
+                                        type='primary'
+                                        className='resend-email-btn-black'
+                                    >Login</Button>
+                                </div>
+                            </AntForm>
+                        )
+                        }
+                    </Formik>
+                </div>
             </div>
-        </div>
+        </>
     )
 }
 
