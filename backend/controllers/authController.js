@@ -99,8 +99,10 @@ export const loginUser = async (request, response) => {
         const data = await Otp.create({
             id: result._id,
             otp: otpHash,
-            email: result.email
+            email: result.email,
+            expiresTime: new Date(Date.now() + 5 * 60 * 1000)
         })
+
 
         const sendEmail = {
             from: process.env.SENDER_EMAIL,

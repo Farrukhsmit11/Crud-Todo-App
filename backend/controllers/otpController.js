@@ -104,7 +104,7 @@ export const resendOtp = async (request, response) => {
 
         await transporter.sendMail(mailOptions)
 
-        response.status(200).json({ message: "New OTP has been Sended  to your email", success: true, data: user })
+        response.status(200).json({ message: "New OTP has been Sended To Your Email", success: true, data: user })
 
     } catch (error) {
         console.error("Error resending otp", error)

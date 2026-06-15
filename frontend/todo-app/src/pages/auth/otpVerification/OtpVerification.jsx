@@ -16,7 +16,7 @@ const OtpVerification = () => {
     const [email, setEmail] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [minutes, setMinutes] = useState(1);
-    const [seconds, setSeconds] = useState(59);
+    const [seconds, setSeconds] = useState(5 * 60);
     const [Isdisabled, setIsDisabled] = useState(true)
 
     const location = useLocation();
@@ -55,6 +55,21 @@ const OtpVerification = () => {
         }
     }
 
+    useEffect(() => {
+        if (seconds === 0) {
+            return
+        }
+
+        const timer = setInterval(() => {
+            setSeconds(seconds - 1)
+        }, 1000)
+        return () => {
+            clearInterval(timer)
+        }
+    }, [seconds])
+
+
+
     const handleResendOtp = async () => {
         try {
             const resend = await axios.post(`${BASE_URL}/resend-otp`, {
@@ -64,6 +79,7 @@ const OtpVerification = () => {
             )
             const data = resend?.data?.user
             message.success(`New OTP Has been sent to ${userEmail}`)
+            setSeconds(300)
         } catch (error) {
             if (error.response) {
                 message.error(error.response.data.message)
@@ -72,26 +88,7 @@ const OtpVerification = () => {
         }
     }
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (seconds > 0) {
-                setSeconds(seconds - 1)
-            }
 
-            // When seconds reach 0 decrease minutes
-            if (seconds === 0) {
-                if (minutes === 0) {
-                    clearInterval(interval)
-                } else {
-                    setSeconds(59)
-                    setMinutes(-1)
-                }
-            }
-        }, 1000)
-        return () => {
-            clearInterval(interval)
-        }
-    }, [seconds])
 
     return (
         <div className="auth-container">
@@ -133,8 +130,7 @@ const OtpVerification = () => {
                                     size="medium"
                                     length={6}
                                     separator="-"
-                                    onChange={(value) => setOtp(value)}
-                                    value={values.otpInput}
+                                    onChange={(value) => setOtp(value)} value={values.otpInput}
                                     name="otpInput"
                                 />
 
