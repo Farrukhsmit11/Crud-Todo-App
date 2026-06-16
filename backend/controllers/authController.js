@@ -16,6 +16,7 @@ export const registerUser = async (request, response) => {
 
     try {
         const email = await User.findOne({ email: request.body.email })
+
         if (email) {
             response.status(400).send({ message: "Sorry a user with this email already exist" })
             return
@@ -73,8 +74,9 @@ export const loginUser = async (request, response) => {
             return
         }
 
-        console.log("EMAIL:", request.body.email);
-        console.log("PASSWORD:", request.body.password);
+        console.log("PASSWORD:", password);
+        console.log("HASH:", result.password);
+        console.log("MATCH:", isPasswordValid);
 
         const token = jwt.sign(
             {
@@ -131,12 +133,14 @@ export const forgotPassword = async (request, response) => {
     const { email } = request.body
 
     try {
+
         if (!email) {
             response.status(400).send({ message: "Email is required" })
             return
         }
 
         const data = await User.findOne({ email })
+
         if (!data) {
             response.status(400).send({ message: "user not found" })
             return
@@ -177,19 +181,19 @@ export const resetPassword = async (request, response) => {
     const { newPassword, confirmPassword } = request.body
 
     try {
+        if (!newPassword || !confirmPassword) {
+            response.status(400).send({ message: "Please Fill All Fields" })
+            return
+        }
 
         if (newPassword != confirmPassword) {
             response.status(400).send({ message: "Password does not match" })
             return
         }
 
-        if (!newPassword || !confirmPassword) {
-            response.status(400).send({ message: "newPassword and Confirm Password missing" })
-            return
-        }
-
         const user = await User.findOne({
-            resetToken: token
+            resetPasswordToken: token,
+            resetPasswordExpiry: { $gt: Date.now() }
         })
 
         if (!user) {
@@ -197,13 +201,13 @@ export const resetPassword = async (request, response) => {
             return
         }
 
-        const salt = 10
-        const hashedPassword = await bcrypt.hash(newPassword, salt)
+        const hashedPassword = await bcrypt.hash(newPassword, 10)
 
-        user.password = hashedPassword
-        await user.save()
+        user.password = hashedPassword;
+        user.resetPasswordToken = undefined
+        await user.save();
 
-        response.status(200).send({ message: "Password reset sucessfully", user, token })
+        response.status(200).send({ message: "Password reset sucessfully", user })
 
     } catch (error) {
         console.error("error reseting password", error)

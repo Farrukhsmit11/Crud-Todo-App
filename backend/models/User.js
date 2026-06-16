@@ -9,6 +9,7 @@ const userSchema = mongoose.Schema({
     email: {
         type: String,
         required: true,
+        lowercase: true,
         unique: true
     },
 
@@ -17,8 +18,12 @@ const userSchema = mongoose.Schema({
         required: true
     },
 
-    resetToken: {
+    resetPasswordToken: {
         type: String
+    },
+
+    resetTokenExpiry: {
+        Date
     }
 },
     { timestamps: true }
