@@ -96,11 +96,6 @@ export const loginUser = async (request, response) => {
 
         const otpHash = await bcrypt.hashSync(otp.toString(), 10)
 
-        if (result.expiresTime < Date.now()) {
-            response.status(400).send({ message: "OTP Expired]" })
-            return
-        }
-
         const data = await Otp.create({
             id: result._id,
             otp: otpHash,
@@ -189,17 +184,16 @@ export const resetPassword = async (request, response) => {
             resetToken: token
         })
 
+
         if (!data) {
             response.status(400).send({ message: "Invalid or expired token" })
             return
         }
-        console.log("Token:", token)
-        console.log("New Password:", newPassword)
 
         const salt = 10
         const hashedPassword = await bcrypt.hash(newPassword, salt)
-        console.log("Hash:", hashedPassword)
 
+        data.resetToken = undefined
         data.password = hashedPassword
         await data.save()
 
