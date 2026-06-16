@@ -193,9 +193,13 @@ export const resetPassword = async (request, response) => {
             response.status(400).send({ message: "Invalid or expired token" })
             return
         }
+        console.log("Token:", token)
+        console.log("New Password:", newPassword)
 
         const salt = 10
         const hashedPassword = await bcrypt.hash(newPassword, salt)
+        console.log("Hash:", hashedPassword)
+
         data.password = hashedPassword
         await data.save()
 
