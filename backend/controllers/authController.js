@@ -196,7 +196,6 @@ export const resetPassword = async (request, response) => {
             resetPasswordExpiry: { $gt: new Date() }
         })
 
-
         if (!user) {
             return response.status(400).send({
                 message: "Invalid or expired token"
@@ -207,6 +206,7 @@ export const resetPassword = async (request, response) => {
 
         user.password = hashedPassword;
         user.resetPasswordToken = undefined
+        user.resetPasswordExpiry = undefined
         await user.save();
 
         response.status(200).send({ message: "Password reset sucessfully", user })
