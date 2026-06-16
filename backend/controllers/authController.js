@@ -73,6 +73,9 @@ export const loginUser = async (request, response) => {
             return
         }
 
+        console.log("EMAIL:", request.body.email);
+        console.log("PASSWORD:", request.body.password);
+
         const token = jwt.sign(
             {
                 id: result._id,
@@ -175,17 +178,21 @@ export const resetPassword = async (request, response) => {
 
     try {
 
+        if (newPassword != confirmPassword) {
+            response.status(400).send({ message: "Password does not match" })
+            return
+        }
+
         if (!newPassword || !confirmPassword) {
             response.status(400).send({ message: "newPassword and Confirm Password missing" })
             return
         }
 
-        const data = await User.findOne({
+        const user = await User.findOne({
             resetToken: token
         })
 
-
-        if (!data) {
+        if (!user) {
             response.status(400).send({ message: "Invalid or expired token" })
             return
         }
@@ -193,16 +200,14 @@ export const resetPassword = async (request, response) => {
         const salt = 10
         const hashedPassword = await bcrypt.hash(newPassword, salt)
 
-        data.resetToken = undefined
-        data.password = hashedPassword
-        await data.save()
+        user.password = hashedPassword
+        await user.save()
 
-        response.status(200).send({ message: "Password reset sucessfully", data, token })
+        response.status(200).send({ message: "Password reset sucessfully", user, token })
 
     } catch (error) {
         console.error("error reseting password", error)
     }
-
 }
 
 export default { registerUser, loginUser, forgotPassword, resetPassword }

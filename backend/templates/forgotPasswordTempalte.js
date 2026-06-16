@@ -10,7 +10,6 @@ const forgotPasswordTemplate = ({ resetUrl, userEmail }) => {
             </p>
 
             <div style="text-align: center; margin: 30px 0;">
-            <h1>hello ${userEmail}</h1>
                 <a href="${resetUrl}" target="_blank"
                     style="
             background-color: #007bff;
