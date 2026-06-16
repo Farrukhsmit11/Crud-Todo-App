@@ -191,6 +191,7 @@ export const resetPassword = async (request, response) => {
 
         if (!data) {
             response.status(400).send({ message: "Invalid or expired token" })
+            return
         }
 
         const salt = 10
