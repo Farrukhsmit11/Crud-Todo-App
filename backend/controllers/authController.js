@@ -195,8 +195,8 @@ export const resetPassword = async (request, response) => {
 
         const salt = 10
         const hashedPassword = await bcrypt.hash(newPassword, salt)
-
         data.password = hashedPassword
+        data.resetToken = undefined
         await data.save()
 
         response.status(200).send({ message: "Password reset sucessfully", data, token })
