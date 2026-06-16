@@ -70,6 +70,7 @@ const ResetPassword = () => {
                   onChange={(e) => setNewPassword(e.target.value.trim())}
                   placeholder='Password'
                   value={newPassword}
+                  type="password"
                   name='password'
                   className='form-input'
                 ></Input.Password>
@@ -83,7 +84,8 @@ const ResetPassword = () => {
                 <Input.Password
                   placeholder=' Confirm Password'
                   onChange={(e) => setConfirmPassword(e.target.value.trim())}
-                  value={newPassword}
+                  value={confirmPassword}
+                  type="password"
                   name='password'
                   className='form-input'
                 ></Input.Password>
