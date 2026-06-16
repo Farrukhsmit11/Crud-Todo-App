@@ -196,11 +196,6 @@ export const resetPassword = async (request, response) => {
             resetPasswordExpiry: { $gt: new Date() }
         })
 
-        if (!user) {
-            response.status(400).send({ message: "Invalid or expired token" })
-            return
-        }
-
         const hashedPassword = await bcrypt.hash(newPassword, 10)
 
         user.password = hashedPassword;
