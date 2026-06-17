@@ -5,13 +5,15 @@ import { Formik } from 'formik';
 import { resetPasswordSchema } from './ResetPasswordSchema';
 import axios from "axios"
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 const ResetPassword = () => {
 
   const [form] = AntForm.useForm();
   const [newPassword, setNewPassword] = useState("");
   const [email, setEmail] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const { token } = useParams()
 
   const handlSubmit = (values) => {
     console.log("values", values);
@@ -27,7 +29,10 @@ const ResetPassword = () => {
 
   const navigate = useNavigate()
 
+
   const handleResetPassword = async () => {
+
+
     try {
       const response = await axios.post(`${BASE_URL}/reset-password`, {
         newPassword,
@@ -53,6 +58,7 @@ const ResetPassword = () => {
         <Formik
           validationSchema={resetPasswordSchema}
         >
+
           {({
             handleSubmit,
             handleBlur,
@@ -75,7 +81,6 @@ const ResetPassword = () => {
                   className='form-input'
                 ></Input.Password>
               </AntForm.Item>
-
 
               <AntForm.Item
 

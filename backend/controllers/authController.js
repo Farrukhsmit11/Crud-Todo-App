@@ -61,22 +61,12 @@ export const loginUser = async (request, response) => {
             return
         }
 
-        const result = await User.findOne({ email: request.body.email })
+        const result = await User.findOne({ email: request.body.email }).select("+ password")
 
         if (!result) {
             response.status(400).send({ message: "user not found" })
             return
         }
-
-        const isPasswordValid = await bcrypt.compare(request.body.password, result.password)
-        if (!isPasswordValid) {
-            response.status(400).send({ message: "Incorrect Password" })
-            return
-        }
-
-        console.log("PASSWORD:", password);
-        console.log("HASH:", result.password);
-        console.log("MATCH:", isPasswordValid);
 
         const token = jwt.sign(
             {
@@ -148,10 +138,9 @@ export const forgotPassword = async (request, response) => {
 
         const resetToken = jwt.sign({
             id: data.id,
-            email: data.email
         },
             process.env.JWT_SECRET_KEY,
-            { expiresIn: "1d" }
+            { expiresIn: "20m" }
         )
 
         const resetUrl = `${process.env.CLIENT_URL}/resetPassword/${resetToken}`
@@ -166,8 +155,11 @@ export const forgotPassword = async (request, response) => {
         }
 
         await transporter.sendMail(emailOptions)
+        data.resetPasswordToken = resetToken
+        data.resetPasswordExpiry = Date.now() + 15 * 60 * 1000
+        await data.save();
 
-        response.status(200).json({ message: "Reset Password Mail send Sucessfully", data, resetToken })
+        response.status(200).json({ message: "Reset Password Mail send Sucessfully" })
 
     } catch (error) {
         console.error("error", error)
@@ -177,10 +169,11 @@ export const forgotPassword = async (request, response) => {
 
 export const resetPassword = async (request, response) => {
 
-    const { token } = request.params
     const { newPassword, confirmPassword } = request.body
+    const { resetToken } = request.params
 
     try {
+
         if (!newPassword || !confirmPassword) {
             response.status(400).send({ message: "Please Fill All Fields" })
             return
@@ -192,24 +185,23 @@ export const resetPassword = async (request, response) => {
         }
 
         const user = await User.findOne({
-            resetPasswordToken: token,
-            resetPasswordExpiry: { $gt: new Date() }
+            resetPasswordToken: resetToken,
         })
 
         if (!user) {
-            return response.status(400).send({
+            response.status(400).send({
                 message: "Invalid or expired token"
             });
+            return
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 10)
-
         user.password = hashedPassword;
         user.resetPasswordToken = undefined
         user.resetPasswordExpiry = undefined
         await user.save();
 
-        response.status(200).send({ message: "Password reset sucessfully", user })
+        response.status(200).send({ message: "Password reset sucessfully" })
 
     } catch (error) {
         console.error("error reseting password", error)
