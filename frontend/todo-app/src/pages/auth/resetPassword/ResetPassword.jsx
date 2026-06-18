@@ -13,12 +13,12 @@ const ResetPassword = () => {
   const [email, setEmail] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const { token } = useParams()
-
   const handlSubmit = (values) => {
     console.log("values", values);
     form.resetFields();
   }
+
+  const {token} = useParams();
 
   const BASE_URL = "http://localhost:3000"
 
@@ -34,7 +34,7 @@ const ResetPassword = () => {
 
 
     try {
-      const response = await axios.post(`${BASE_URL}/reset-password`, {
+      const response = await axios.post(`${BASE_URL}/reset-password/${token}`, {
         newPassword,
         confirmPassword
       })

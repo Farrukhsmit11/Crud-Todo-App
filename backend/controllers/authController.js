@@ -64,9 +64,20 @@ export const loginUser = async (request, response) => {
         const result = await User.findOne({ email: request.body.email }).select("+ password")
 
         if (!result) {
-            response.status(400).send({ message: "user not found" })
+            response.status(400).send({ message: "Email and Password Incorrect" })
             return
         }
+
+        
+        console.log("Entered Password:", request.body.password);
+        console.log("DB Hash:", result.password);
+
+        const isPassowrdCorrect = await bcrypt.compare(password, result.password)
+        if (!isPassowrdCorrect) {
+            response.status(400).send({ message: "Invalid password" })
+            return
+        }
+
 
         const token = jwt.sign(
             {
@@ -136,14 +147,16 @@ export const forgotPassword = async (request, response) => {
             return
         }
 
-        const resetToken = jwt.sign({
+        const resetPasswordToken = jwt.sign({
             id: data.id,
         },
             process.env.JWT_SECRET_KEY,
             { expiresIn: "20m" }
         )
 
-        const resetUrl = `${process.env.CLIENT_URL}/resetPassword/${resetToken}`
+        const resetTokenExpires = Date.now() + 1 * 60 * 60 * 1000
+
+        const resetUrl = `${process.env.CLIENT_URL}/resetPassword/${resetPasswordToken}`
 
         const emailOptions = {
             from: process.env.SENDER_EMAIL,
@@ -155,8 +168,8 @@ export const forgotPassword = async (request, response) => {
         }
 
         await transporter.sendMail(emailOptions)
-        data.resetPasswordToken = resetToken
-        data.resetPasswordExpiry = Date.now() + 15 * 60 * 1000
+        data.resetPasswordToken = resetPasswordToken
+        data.resetPasswordExpiry = resetTokenExpires
         await data.save();
 
         response.status(200).json({ message: "Reset Password Mail send Sucessfully" })
@@ -170,7 +183,7 @@ export const forgotPassword = async (request, response) => {
 export const resetPassword = async (request, response) => {
 
     const { newPassword, confirmPassword } = request.body
-    const { resetToken } = request.params
+    const { resetToken } = request.params;
 
     try {
 
