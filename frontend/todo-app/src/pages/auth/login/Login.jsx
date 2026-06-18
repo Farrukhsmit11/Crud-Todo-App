@@ -38,7 +38,7 @@ const Login = ({ userEmail }) => {
         },
         { withCredentials: true },
       )
-      
+
       navigate("/otpVerification", { state: { email } })
       message.success(`We have sent 6 digit OTP To ${email} for Verification`)
 
@@ -63,8 +63,8 @@ const Login = ({ userEmail }) => {
 
           <Formik
             initialValues={initialValues}
-            validationSchema={validationSchema}
             onSubmit={onSubmit}
+            validationSchema={validationSchema}
           >
             {({
               handleSubmit,
@@ -81,12 +81,7 @@ const Login = ({ userEmail }) => {
               >
                 <AntForm.Item
                   label={<span className='form-label'> Email</span>}
-                  validateStatus={errors.email && touched.email ? "error" : ""}
-                  help={
-                    touched.email && errors.email && (
-                      <span className='form-error'>{errors.email}</span>
-                    )
-                  }
+
                 >
                   <Input
                     onChange={(e) => setEmail(e.target.value)}
@@ -99,12 +94,7 @@ const Login = ({ userEmail }) => {
                 </AntForm.Item>
 
                 <AntForm.Item
-                  validateStatus={errors.password && touched.password ? "error" : ""}
-                  help={
-                    errors.password && touched.password ? (
-                      <span className='form-error'>{errors.password}</span>
-                    ) : null
-                  }
+
                   label={<span className='form-label'>Password</span>}
                 >
                   <Input.Password

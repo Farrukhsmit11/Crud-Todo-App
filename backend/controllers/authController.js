@@ -74,10 +74,6 @@ export const loginUser = async (request, response) => {
             return
         }
 
-        console.log("Password from DB:", result.password)
-        console.log("Password from request:", password)
-        console.log("Does it look hashed?", result.password?.startsWith("$2"))
-
         const token = jwt.sign(
             {
                 id: result._id,
@@ -150,7 +146,7 @@ export const forgotPassword = async (request, response) => {
             id: data.id,
         },
             process.env.JWT_SECRET_KEY,
-            { expiresIn: "1d" }
+            { expiresIn: "5d" }
         )
 
         const resetTokenExpires = Date.now() + 1 * 60 * 60 * 1000
@@ -198,10 +194,13 @@ export const resetPassword = async (request, response) => {
 
         const user = await User.findOne({
             resetPasswordToken: resetToken,
+            resetPasswordExpiry: { $gt: Date.now() }
         })
 
+        console.log(resetToken)
+
         if (!user) {
-            response.status(400).send({
+            response.status(400).json({
                 message: "Invalid or expired token"
             });
             return
@@ -214,8 +213,8 @@ export const resetPassword = async (request, response) => {
             user._id,
             {
                 password: hashedPassword,
-                resetPasswordToken: undefined,
-                resetPasswordExpiry: undefined
+                resetPasswordToken: "",
+                resetPasswordExpiry: ""
             },
             { new: true }
         );

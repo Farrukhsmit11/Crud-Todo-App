@@ -76,12 +76,7 @@ const SignUp = () => {
                         >
                             <AntForm.Item
                                 label={<span className='form-label'>Name</span>}
-                                validateStatus={errors.name && touched.name ? "error" : ""}
-                                help={
-                                    errors.name && touched.name ? (
-                                        <span className='form-error'>{errors.name}</span>
-                                    ) : null
-                                }
+                           
                             >
                                 <Input
                                     onChange={(e) => setName(e.target.value)}
@@ -94,12 +89,7 @@ const SignUp = () => {
                             </AntForm.Item>
 
                             <AntForm.Item
-                                validateStatus={errors.email && touched.email ? "error" : ""}
-                                help={
-                                    errors.name && touched.name ? (
-                                        <span className='form-error'>{errors.email}</span>
-                                    ) : null
-                                }
+                              
                                 label={<span className='form-label'>Email</span>}
                             >
                                 <Input
@@ -113,12 +103,7 @@ const SignUp = () => {
                             </AntForm.Item>
 
                             <AntForm.Item
-                                validateStatus={errors.password && touched.password ? "error" : ""}
-                                help={
-                                    errors.password && touched.password ? (
-                                        <span className='form-error'>{errors.password}</span>
-                                    ) : null
-                                }
+                               
                                 label={<span className='form-label'>Password</span>}
                             >
                                 <Input
