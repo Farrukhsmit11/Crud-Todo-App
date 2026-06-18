@@ -61,23 +61,22 @@ export const loginUser = async (request, response) => {
             return
         }
 
-        const result = await User.findOne({ email: request.body.email }).select("+ password")
+        const result = await User.findOne({ email: request.body.email }).select("+password")
 
         if (!result) {
             response.status(400).send({ message: "Email and Password Incorrect" })
             return
         }
 
-        
-        console.log("Entered Password:", request.body.password);
-        console.log("DB Hash:", result.password);
-
-        const isPassowrdCorrect = await bcrypt.compare(password, result.password)
-        if (!isPassowrdCorrect) {
-            response.status(400).send({ message: "Invalid password" })
+        const IsPasswordValid = await bcrypt.compare(password, result.password)
+        if (!IsPasswordValid) {
+            response.status(400).send({ message: "invalid password" })
             return
         }
 
+        console.log("Password from DB:", result.password)
+        console.log("Password from request:", password)
+        console.log("Does it look hashed?", result.password?.startsWith("$2"))
 
         const token = jwt.sign(
             {
@@ -182,7 +181,7 @@ export const forgotPassword = async (request, response) => {
 
 export const resetPassword = async (request, response) => {
 
-    const { newPassword, confirmPassword } = request.body
+    const { userId, newPassword, confirmPassword } = request.body
     const { resetToken } = request.params;
 
     try {
@@ -209,10 +208,18 @@ export const resetPassword = async (request, response) => {
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 10)
-        user.password = hashedPassword;
-        user.resetPasswordToken = undefined
-        user.resetPasswordExpiry = undefined
-        await user.save();
+
+
+        const updatedUser = await User.findByIdAndUpdate(
+            user._id,
+            {
+                password: hashedPassword,
+                resetPasswordToken: undefined,
+                resetPasswordExpiry: undefined
+            },
+            { new: true }
+        );
+
 
         response.status(200).send({ message: "Password reset sucessfully" })
 

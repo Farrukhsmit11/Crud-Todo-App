@@ -18,8 +18,6 @@ const ResetPassword = () => {
     form.resetFields();
   }
 
-  const {token} = useParams();
-
   const BASE_URL = "http://localhost:3000"
 
   const initialValues = {
@@ -37,7 +35,9 @@ const ResetPassword = () => {
       const response = await axios.post(`${BASE_URL}/reset-password`, {
         newPassword,
         confirmPassword
-      })
+      },
+        { withCredentials: true }
+      )
       const reset = response?.data.data
       message.success("Password reset sucessfully")
       navigate("/login")
