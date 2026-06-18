@@ -34,7 +34,7 @@ const ResetPassword = () => {
 
 
     try {
-      const response = await axios.post(`${BASE_URL}/reset-password/${token}`, {
+      const response = await axios.post(`${BASE_URL}/reset-password`, {
         newPassword,
         confirmPassword
       })
