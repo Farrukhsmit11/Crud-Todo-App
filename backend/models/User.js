@@ -23,7 +23,7 @@ const userSchema = mongoose.Schema({
     },
 
     resetTokenExpiry: {
-        Date
+        type: Date
     }
 },
     { timestamps: true }
