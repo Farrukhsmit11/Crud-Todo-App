@@ -9,6 +9,6 @@ router.route("/verify-otp").post(verifyOtp)
 router.route("/get-otp").get(getOtp)
 router.route("/resend-otp").post(resendOtp)
 router.route("/forgot-password").post(forgotPassword)
-router.route("/reset-password").post(resetPassword)
+router.route("/reset-password/:token").post(resetPassword)
 
 export default router

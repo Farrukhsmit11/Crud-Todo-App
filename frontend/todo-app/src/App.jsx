@@ -31,7 +31,7 @@ function App() {
         <Route path='/todoList' element={<TodoList />}></Route>
         <Route path='/Login' element={<Login />}></Route>
         <Route path='/forgotPassword' element={<ForgotPassword />}></Route>
-        <Route path='/resetPassword' element={<ResetPassword />}></Route>
+        <Route path='/resetPassword/:token' element={<ResetPassword />}></Route>
         <Route path='/otpVerification' element={<OtpVerification />}></Route>
       </Routes>
 
