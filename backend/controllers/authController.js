@@ -150,7 +150,7 @@ export const forgotPassword = async (request, response) => {
             id: data.id,
         },
             process.env.JWT_SECRET_KEY,
-            { expiresIn: "20m" }
+            { expiresIn: "1d" }
         )
 
         const resetTokenExpires = Date.now() + 1 * 60 * 60 * 1000
