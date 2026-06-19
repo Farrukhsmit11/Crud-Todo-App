@@ -1,6 +1,6 @@
 import express, { request, response, text } from "express"
-import { User } from "../models/User.js"
 import bcrypt, { hash } from "bcrypt"
+import { User } from "../models/User.js"
 import jwt from "jsonwebtoken"
 import transporter from "../services/emailService.js"
 import otpTemplate from "../templates/otpTemplate.js"
@@ -9,34 +9,38 @@ import forgotPasswordTemplate from "../templates/forgotPasswordTempalte.js"
 import { Otp } from "../models/Otp.js"
 import { generateOtp } from "../utils/helper.js"
 import crypto from "crypto"
+import { loginSchema, registerSchema } from "../validations/user.validations.js"
 
 export const registerUser = async (request, response) => {
 
-    const { email: userEmail, name } = request.body
-
     try {
-        const email = await User.findOne({ email: request.body.email })
 
-        if (email) {
+        const { error, value } = registerSchema.validate(request.body)
+
+        const { name, email, password } = value
+
+        const res = await User.findOne({ email })
+
+        if (res) {
             response.status(400).send({ message: "Sorry a user with this email already exist" })
             return
         }
 
-        if (!request.body.name || !request.body.email || !request.body.password) {
+        if (!name || !email || !password) {
             response.status(400).send({ message: "Please Fill all The Fields" })
             return
         }
 
-        const encryptedPassword = await bcrypt.hash(request.body.password, 10)
+        const encryptedPassword = await bcrypt.hash(password, 10)
 
         const data = await User.create({
-            name: request.body.name,
-            email: request.body.email,
+            name: name,
+            email: email,
             password: encryptedPassword
         })
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
-            to: userEmail,
+            to: email,
             subject: "Welcome to Todo List",
             text: `Hello ${name}. Welcome To Todo-List Website. Your account has been created sucessfully 🎉 with the ${userEmail}`,
             html: signupTemplate(userEmail)
@@ -44,7 +48,7 @@ export const registerUser = async (request, response) => {
 
         await transporter.sendMail(mailOptions);
 
-        response.status(200).json({ message: "signup sucessfully", data: data, sucess: true })
+        response.status(200).json({ message: "signup sucessfully", data: res, sucess: true })
 
     } catch (error) {
         console.error("Error creating user", error)
@@ -53,15 +57,20 @@ export const registerUser = async (request, response) => {
 
 export const loginUser = async (request, response) => {
 
-    const { email: userEmail, password } = request.body
+    const { error, value } = loginSchema.validate(request.body)
+    if (error) {
+        response.status(400).json(error.details[0].message)
+    }
 
     try {
-        if (!request.body.email || !request.body.password) {
+        const { email, password } = value
+
+        if (!email || !password) {
             response.status(400).send({ message: "Please Fill all the fields" })
             return
         }
 
-        const result = await User.findOne({ email: request.body.email }).select("+password")
+        const result = await User.findOne({ email }).select("+password")
 
         if (!result) {
             response.status(400).send({ message: "Email and Password Incorrect" })
@@ -81,7 +90,7 @@ export const loginUser = async (request, response) => {
             },
             process.env.JWT_SECRET_KEY,
             {
-                expiresIn: "1hr"
+                expiresIn: "1h"
             }
         );
 
@@ -177,7 +186,7 @@ export const forgotPassword = async (request, response) => {
 
 export const resetPassword = async (request, response) => {
 
-    const { userId, newPassword, confirmPassword } = request.body
+    const { id, newPassword, confirmPassword } = request.body
     const { resetToken } = request.params;
 
     try {
@@ -194,31 +203,20 @@ export const resetPassword = async (request, response) => {
 
         const user = await User.findOne({
             resetPasswordToken: resetToken,
-            resetPasswordExpiry: { $gt: Date.now() }
+            resetTokenExpiry: { $gt: Date.now() }
         })
-
-        console.log(resetToken)
-
-        if (!user) {
-            response.status(400).json({
-                message: "Invalid or expired token"
-            });
-            return
-        }
 
         const hashedPassword = await bcrypt.hash(newPassword, 10)
 
-
         const updatedUser = await User.findByIdAndUpdate(
-            user._id,
+            id,
             {
                 password: hashedPassword,
                 resetPasswordToken: "",
-                resetPasswordExpiry: ""
+                resetTokenExpiry: ""
             },
             { new: true }
         );
-
 
         response.status(200).send({ message: "Password reset sucessfully" })
 
