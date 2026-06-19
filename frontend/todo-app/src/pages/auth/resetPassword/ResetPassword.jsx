@@ -6,19 +6,17 @@ import { resetPasswordSchema } from './ResetPasswordSchema';
 import axios from "axios"
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
 const ResetPassword = () => {
 
   const [form] = AntForm.useForm();
-  const [newPassword, setNewPassword] = useState("");
-  const [email, setEmail] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [otp, setOtp] = useState("")
 
   const handlSubmit = (values) => {
     console.log("values", values);
     form.resetFields();
   }
-
-
 
   const BASE_URL = "http://localhost:3000"
 
@@ -29,37 +27,17 @@ const ResetPassword = () => {
 
   const navigate = useNavigate()
 
-  const handleResetPassword = async () => {
-
-
-    try {
-      const response = await axios.post(`${BASE_URL}/reset-password`, {
-        newPassword,
-        confirmPassword
-      },
-        { withCredentials: true }
-      )
-      const reset = response?.data.data
-      message.success("Password reset sucessfully")
-      navigate("/login")
-    } catch (error) {
-      if (error.response) {
-        message.error(error.response.data.message)
-      }
-
-      console.error("error reseting password")
-    }
-  }
-
   return (
     <div className='auth-container'>
       <div className="auth-card">
-        <h1 className='auth-title'>Reset Password</h1>
+        <div className="auth-header">
+          <h1 className='reset-password-title'>Reset Password</h1>
+          <p className='auth-description'>Enter 6-digit code sent to your email </p>
+        </div>
 
         <Formik
           validationSchema={resetPasswordSchema}
         >
-
           {({
             handleSubmit,
             handleBlur,
@@ -71,39 +49,23 @@ const ResetPassword = () => {
               onFinish={handlSubmit}
             >
               <AntForm.Item
-                label="Password"
+                label="Verification Code"
               >
-                <Input.Password
-                  onChange={(e) => setNewPassword(e.target.value.trim())}
-                  placeholder='Password'
-                  value={newPassword}
-                  type="password"
-                  name='password'
-                  className='form-input'
-                ></Input.Password>
+                <Input.OTP
+                  separator="-"
+                  type='otp'
+                  value='otp'
+                >
+                </Input.OTP>
               </AntForm.Item>
 
-              <AntForm.Item
-
-                label={<span className='form-label'>Confirm Password</span>}
-              >
-                <Input.Password
-                  placeholder=' Confirm Password'
-                  onChange={(e) => setConfirmPassword(e.target.value.trim())}
-                  value={confirmPassword}
-                  type="password"
-                  name='password'
-                  className='form-input'
-                ></Input.Password>
-              </AntForm.Item>
 
               <div className='submit-actions'>
                 <Button
-                  onClick={() => handleResetPassword()}
                   className='reset-password-btn'
                   htmlType='submit'
-                >Reset Password</Button>
-
+                >Reset Password
+                </Button>
               </div>
 
             </AntForm>

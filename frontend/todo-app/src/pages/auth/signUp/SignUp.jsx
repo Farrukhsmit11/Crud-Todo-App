@@ -25,7 +25,6 @@ const SignUp = () => {
     const navigate = useNavigate();
 
     const onSubmit = (values, { resetForm }) => {
-        console.log("values", values)
         resetForm();
     }
 
@@ -44,7 +43,6 @@ const SignUp = () => {
         } catch (error) {
             if (error.response) {
                 message.error(error.response.data.message)
-                console.log(error.response)
             }
             console.error("Error adding user", error)
         }
@@ -75,8 +73,16 @@ const SignUp = () => {
                             action="/signup"
                         >
                             <AntForm.Item
+                                // validateStatus={
+                                //     errors.name && touched.name ? "error" : ""
+                                // }
+                                // help={
+                                //     errors.name && touched.name ? (
+                                //         <span className='form-error'>{errors.name}</span>
+                                //     ) : null
+                                // }
                                 label={<span className='form-label'>Name</span>}
-                           
+
                             >
                                 <Input
                                     onChange={(e) => setName(e.target.value)}
@@ -89,7 +95,14 @@ const SignUp = () => {
                             </AntForm.Item>
 
                             <AntForm.Item
-                              
+                                // validateStatus={
+                                //     errors.email && touched.email ? "error" : ""
+                                // }
+                                // help={
+                                //     errors.email && touched.email ? (
+                                //         <span className='form-error'>{errors.email}</span>
+                                //     ) : null
+                                // }
                                 label={<span className='form-label'>Email</span>}
                             >
                                 <Input
@@ -103,7 +116,7 @@ const SignUp = () => {
                             </AntForm.Item>
 
                             <AntForm.Item
-                               
+
                                 label={<span className='form-label'>Password</span>}
                             >
                                 <Input
