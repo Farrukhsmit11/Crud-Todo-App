@@ -53,8 +53,6 @@ const ResetPassword = () => {
               >
                 <Input.OTP
                   separator="-"
-                  type='otp'
-                  value='otp'
                 >
                 </Input.OTP>
               </AntForm.Item>
