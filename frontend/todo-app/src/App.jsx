@@ -6,6 +6,7 @@ import ResetPassword from './pages/auth/resetPassword/ResetPassword'
 import { useEffect, useState } from 'react'
 import Loader from './components/loader/Loader'
 import OtpVerification from './pages/auth/otpVerification/OtpVerification'
+import ChangePassword from './pages/auth/changePassword/ChangePassword'
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
         <Route path='/forgotPassword' element={<ForgotPassword />}></Route>
         <Route path='/resetPassword/:token' element={<ResetPassword />}></Route>
         <Route path='/otpVerification' element={<OtpVerification />}></Route>
+        <Route path='/changePassword' element={<ChangePassword />}></Route>
       </Routes>
 
     </>

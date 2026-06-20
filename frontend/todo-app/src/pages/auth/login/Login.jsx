@@ -13,6 +13,7 @@ const Login = ({ userEmail }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("")
+  const [loading, setLoading] = useState(false);
 
   const BASE_URL = "http://localhost:3000"
 
@@ -30,7 +31,11 @@ const Login = ({ userEmail }) => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
+    setLoading(true)
+
+
     try {
+
       const response = await axios.post(`${BASE_URL}/login`,
         {
           email,
@@ -41,7 +46,6 @@ const Login = ({ userEmail }) => {
 
       navigate("/otpVerification", { state: { email } })
       message.success(`We have sent 6 digit OTP To ${email} for Verification`)
-
       setEmail("")
 
       const loginUser = response?.data?.result
@@ -51,6 +55,8 @@ const Login = ({ userEmail }) => {
         message.error(error.response.data.message)
       }
       console.error("error login", error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -120,6 +126,7 @@ const Login = ({ userEmail }) => {
 
                 <div className="btn-main">
                   <Button
+                    loading={loading}
                     onClick={() => {
                       handleLogin()
                     }

@@ -42,8 +42,8 @@ export const registerUser = async (request, response) => {
             from: process.env.SENDER_EMAIL,
             to: email,
             subject: "Welcome to Todo List",
-            text: `Hello ${name}. Welcome To Todo-List Website. Your account has been created sucessfully 🎉 with the ${userEmail}`,
-            html: signupTemplate(userEmail)
+            text: `Hello ${name}. Welcome To Todo-List Website. Your account has been created sucessfully 🎉 with the ${email}`,
+            html: signupTemplate(email)
         }
 
         await transporter.sendMail(mailOptions);
@@ -58,9 +58,9 @@ export const registerUser = async (request, response) => {
 export const loginUser = async (request, response) => {
 
     const { error, value } = loginSchema.validate(request.body)
-    if (error) {
-        response.status(400).json(error.details[0].message)
-    }
+    // if (error) {
+    //     response.status(400).json(error.details[0].message)
+    // }
 
     try {
         const { email, password } = value
@@ -138,91 +138,56 @@ export const forgotPassword = async (request, response) => {
     const { email } = request.body
 
     try {
-
         if (!email) {
             response.status(400).send({ message: "Email is required" })
             return
         }
 
-        const data = await User.findOne({ email })
+        const res = await User.findOne({ email })
 
-        if (!data) {
+        if (!res) {
             response.status(400).send({ message: "user not found" })
             return
         }
 
-        const resetPasswordToken = jwt.sign({
-            id: data.id,
-        },
-            process.env.JWT_SECRET_KEY,
-            { expiresIn: "5d" }
-        )
+        const otp = generateOtp();
 
-        const resetTokenExpires = Date.now() + 1 * 60 * 60 * 1000
+        const otpRecord = await bcrypt.hash(otp.toString(), 10)
 
-        const resetUrl = `${process.env.CLIENT_URL}/resetPassword/${resetPasswordToken}`
-
-        const emailOptions = {
+        const mailData = {
             from: process.env.SENDER_EMAIL,
             to: email,
-            id: data.email,
-            email: data.email,
-            subject: "Reset Password for Email Verification",
-            html: forgotPasswordTemplate({ resetUrl })
+            subject: "Password Reset OTP",
+            text: `Here is Your 6 digit ${otp}`
         }
 
-        await transporter.sendMail(emailOptions)
-        data.resetPasswordToken = resetPasswordToken
-        data.resetPasswordExpiry = resetTokenExpires
-        await data.save();
+        const otpData = await Otp.create({
+            id: res.id,
+            otp: otpRecord,
+            isUsed: false,
+            email: email,
+            expiresTime: new Date(Date.now() + 10 * 60 * 1000)
+        })
 
-        response.status(200).json({ message: "Reset Password Mail send Sucessfully" })
+        await transporter.sendMail(mailData)
+
+        response.status(200).json({ message: "Reset Password OTP Sent", res })
 
     } catch (error) {
-        console.error("error", error)
+        console.error("Error", error)
     }
 }
 
 
 export const resetPassword = async (request, response) => {
 
-    const { id, newPassword, confirmPassword } = request.body
-    const { resetToken } = request.params;
+    const { email, otp } = request.body
 
-    try {
-
-        if (!newPassword || !confirmPassword) {
-            response.status(400).send({ message: "Please Fill All Fields" })
-            return
-        }
-
-        if (newPassword != confirmPassword) {
-            response.status(400).send({ message: "Password does not match" })
-            return
-        }
-
-        const user = await User.findOne({
-            resetPasswordToken: resetToken,
-            resetTokenExpiry: { $gt: Date.now() }
-        })
-
-        const hashedPassword = await bcrypt.hash(newPassword, 10)
-
-        const updatedUser = await User.findByIdAndUpdate(
-            id,
-            {
-                password: hashedPassword,
-                resetPasswordToken: "",
-                resetTokenExpiry: ""
-            },
-            { new: true }
-        );
-
-        response.status(200).send({ message: "Password reset sucessfully" })
-
-    } catch (error) {
-        console.error("error reseting password", error)
+    if (!otp || !email) {
+        response.status(400).send({ message: "OTP and Email is required" })
+        return
     }
+
 }
 
 export default { registerUser, loginUser, forgotPassword, resetPassword }

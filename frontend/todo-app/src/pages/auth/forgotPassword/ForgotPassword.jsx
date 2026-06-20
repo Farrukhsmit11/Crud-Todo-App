@@ -11,6 +11,7 @@ const ForgotPassword = () => {
 
     const [form] = AntForm.useForm();
     const [email, setEmail] = useState("");
+    const [loading, setLoading] = useState(false)
 
     const initialValues = {
         email: ""
@@ -29,15 +30,18 @@ const ForgotPassword = () => {
                 email
             })
             const data = response?.data.data
-            message.success(`Reset Password Email Send Sucessfully to ${email}`)
+            message.success(`A 6-digit verification code has been sent to ${email}.`)
+            setLoading(true)
+            navigate("/resetPassword/:token")
             form.resetFields();
         } catch (error) {
             if (error.response) {
                 message.error(error.response.data.message)
             }
             console.error("error sending reset email", error)
+        } finally {
+            setLoading(false)
         }
-
     }
 
     const navigate = useNavigate();
@@ -83,6 +87,7 @@ const ForgotPassword = () => {
 
                                 <div className="forgot-password-card-footer">
                                     <Button
+                                        loading={loading}
                                         onClick={() => handleForgotPassword()}
                                         type='primary'
                                         htmlType='submit'

@@ -1,6 +1,6 @@
 import express from "express"
 const router = express.Router()
-import { registerUser, loginUser, forgotPassword, resetPassword } from "../controllers/authController.js"
+import { registerUser, loginUser, resetPassword, forgotPassword } from "../controllers/authController.js"
 import { getOtp, resendOtp, verifyOtp } from "../controllers/otpController.js"
 
 router.route("/signup").post(registerUser)

@@ -49,7 +49,7 @@ const ResetPassword = () => {
               onFinish={handlSubmit}
             >
               <AntForm.Item
-                label="Verification Code"
+                label={<span className='form-label'> Verification Code</span>}
               >
                 <Input.OTP
                   separator="-"
