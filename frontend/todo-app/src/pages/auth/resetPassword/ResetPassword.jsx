@@ -10,9 +10,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 const ResetPassword = () => {
 
   const [form] = AntForm.useForm();
-
   const [otp, setOtp] = useState("")
-
   const [email, setEmail] = useState("")
 
   const location = useLocation();
@@ -36,7 +34,7 @@ const ResetPassword = () => {
       })
       const data = res.data?.otpData
       message.success(" Reset OTP Verified sucessfully")
-      navigate("/changePassword")
+      navigate("/changePassword", { state: { email: resetEmail } })
     } catch (error) {
       if (error.response) {
         message.error(error.response.data.message)
@@ -88,7 +86,6 @@ const ResetPassword = () => {
                 >Reset Password
                 </Button>
               </div>
-
             </AntForm>
           )
           }

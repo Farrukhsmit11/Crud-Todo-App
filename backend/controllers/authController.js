@@ -58,9 +58,9 @@ export const registerUser = async (request, response) => {
 export const loginUser = async (request, response) => {
 
     const { error, value } = loginSchema.validate(request.body)
-    if (error) {
-        response.status(400).json(error.details[0].message)
-    }
+    // if (error) {
+    //     response.status(400).json(error.details[0].message)
+    // }
 
     try {
         const { email, password } = value
@@ -208,6 +208,39 @@ export const resetOtp = async (request, response) => {
         await Otp.deleteMany({ email })
 
         response.status(200).json({ message: "OTP Verified Sucessfully", otpData })
+    } catch (error) {
+        console.error("error", error)
+    }
+}
+
+export const changePassword = async (request, response) => {
+
+    const { email, otp, newPassword } = request.body
+
+    try {
+        if (!email || !newPassword) {
+            response.status(400).send({ message: "Email and Password is required" })
+            return
+        }
+
+        const user = await User.findOne({ email })
+
+        if (!user) {
+            response.status(400).send({ message: "user not found" })
+            return
+        }
+
+        if (user.otp != otp) {
+            response.status(400).send({ message: "Invalid or expired otp" })
+            return
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10)
+        user.password = hashedPassword
+        user.otp = undefined
+        await user.save()
+
+        response.status(200).json({ message: "Password reset sucessfully", user })
     } catch (error) {
         console.error("error", error)
     }
