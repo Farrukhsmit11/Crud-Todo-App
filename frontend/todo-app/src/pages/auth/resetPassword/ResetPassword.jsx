@@ -5,13 +5,19 @@ import { Formik } from 'formik';
 import { resetPasswordSchema } from './ResetPasswordSchema';
 import axios from "axios"
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 const ResetPassword = () => {
 
   const [form] = AntForm.useForm();
 
   const [otp, setOtp] = useState("")
+
+  const [email, setEmail] = useState("")
+
+  const location = useLocation();
+
+  const resetEmail = location.state?.email
 
   const handlSubmit = (values) => {
     console.log("values", values);
@@ -20,12 +26,24 @@ const ResetPassword = () => {
 
   const BASE_URL = "http://localhost:3000"
 
-  const initialValues = {
-    password: "",
-    confirmPassword: ""
-  }
-
   const navigate = useNavigate()
+
+  const handleResetOtp = async () => {
+    try {
+      const res = await axios.post(`${BASE_URL}/verify-reset-otp`, {
+        email: resetEmail,
+        otp
+      })
+      const data = res.data?.otpData
+      message.success(" Reset OTP Verified sucessfully")
+      navigate("/changePassword")
+    } catch (error) {
+      if (error.response) {
+        message.error(error.response.data.message)
+      }
+      console.error("error", error)
+    }
+  }
 
   return (
     <div className='auth-container'>
@@ -41,7 +59,8 @@ const ResetPassword = () => {
           {({
             handleSubmit,
             handleBlur,
-            handleChange
+            handleChange,
+            values
           }) => (
             <AntForm
               form={form}
@@ -53,6 +72,9 @@ const ResetPassword = () => {
               >
                 <Input.OTP
                   separator="-"
+                  onChange={(value) => setOtp(value)}
+                  size="medium"
+                  length={6}
                 >
                 </Input.OTP>
               </AntForm.Item>
@@ -60,6 +82,7 @@ const ResetPassword = () => {
 
               <div className='submit-actions'>
                 <Button
+                  onClick={() => handleResetOtp()}
                   className='reset-password-btn'
                   htmlType='submit'
                 >Reset Password

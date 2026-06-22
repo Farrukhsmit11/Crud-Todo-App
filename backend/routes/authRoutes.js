@@ -1,6 +1,6 @@
 import express from "express"
 const router = express.Router()
-import { registerUser, loginUser, resetPassword, forgotPassword } from "../controllers/authController.js"
+import { registerUser, loginUser, forgotPassword, resetOtp } from "../controllers/authController.js"
 import { getOtp, resendOtp, verifyOtp } from "../controllers/otpController.js"
 
 router.route("/signup").post(registerUser)
@@ -9,6 +9,6 @@ router.route("/verify-otp").post(verifyOtp)
 router.route("/get-otp").get(getOtp)
 router.route("/resend-otp").post(resendOtp)
 router.route("/forgot-password").post(forgotPassword)
-router.route("/reset-password").post(resetPassword)
+router.route("/verify-reset-otp").post(resetOtp)
 
 export default router

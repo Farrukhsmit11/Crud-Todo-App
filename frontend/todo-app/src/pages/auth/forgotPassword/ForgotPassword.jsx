@@ -32,7 +32,7 @@ const ForgotPassword = () => {
             const data = response?.data.data
             message.success(`A 6-digit verification code has been sent to ${email}.`)
             setLoading(true)
-            navigate("/resetPassword/:token")
+            navigate("/resetPassword/:token", { state: { email } })
             form.resetFields();
         } catch (error) {
             if (error.response) {

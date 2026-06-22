@@ -58,9 +58,9 @@ export const registerUser = async (request, response) => {
 export const loginUser = async (request, response) => {
 
     const { error, value } = loginSchema.validate(request.body)
-    // if (error) {
-    //     response.status(400).json(error.details[0].message)
-    // }
+    if (error) {
+        response.status(400).json(error.details[0].message)
+    }
 
     try {
         const { email, password } = value
@@ -103,6 +103,7 @@ export const loginUser = async (request, response) => {
         })
 
         const otp = generateOtp()
+        console.log(otp)
 
         const otpHash = await bcrypt.hashSync(otp.toString(), 10)
 
@@ -169,6 +170,8 @@ export const forgotPassword = async (request, response) => {
             expiresTime: new Date(Date.now() + 10 * 60 * 1000)
         })
 
+        console.log(otp)
+
         await transporter.sendMail(mailData)
 
         response.status(200).json({ message: "Reset Password OTP Sent", res })
@@ -179,15 +182,35 @@ export const forgotPassword = async (request, response) => {
 }
 
 
-export const resetPassword = async (request, response) => {
+export const resetOtp = async (request, response) => {
 
     const { email, otp } = request.body
 
-    if (!otp || !email) {
-        response.status(400).send({ message: "OTP and Email is required" })
-        return
-    }
+    try {
+        if (!otp || !email) {
+            response.status(400).send({ message: "OTP and Email is required" })
+            return
+        }
 
+        const otpData = await Otp.findOne({ email })
+
+        if (!otpData) {
+            response.status(400).send({ message: "Otp not found" })
+            return
+        }
+
+        const matched = await bcrypt.compare(otp.toString(), otpData.otp)
+        if (!matched) {
+            response.status(400).send({ message: "invalid otp" })
+            return
+        }
+
+        await Otp.deleteMany({ email })
+
+        response.status(200).json({ message: "OTP Verified Sucessfully", otpData })
+    } catch (error) {
+        console.error("error", error)
+    }
 }
 
-export default { registerUser, loginUser, forgotPassword, resetPassword }
+export default { registerUser, loginUser, forgotPassword, resetOtp }
