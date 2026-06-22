@@ -18,7 +18,6 @@ const ChangePassword = () => {
     const navigate = useNavigate()
 
     const handLeChangePassword = async () => {
-        console.log(changeEmail)
         try {
             const res = await axios.post(`${BASE_URL}/change-password`, {
                 email: changeEmail,

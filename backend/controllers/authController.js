@@ -16,6 +16,10 @@ export const registerUser = async (request, response) => {
     try {
 
         const { error, value } = registerSchema.validate(request.body)
+        if (error) {
+            response.status(400).json(error.details[0].message)
+        }
+
 
         const { name, email, password } = value
 
@@ -58,9 +62,9 @@ export const registerUser = async (request, response) => {
 export const loginUser = async (request, response) => {
 
     const { error, value } = loginSchema.validate(request.body)
-    // if (error) {
-    //     response.status(400).json(error.details[0].message)
-    // }
+    if (error) {
+        response.status(400).json(error.details[0].message)
+    }
 
     try {
         const { email, password } = value
