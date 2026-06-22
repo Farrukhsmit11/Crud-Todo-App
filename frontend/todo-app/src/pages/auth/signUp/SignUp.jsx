@@ -55,7 +55,6 @@ const SignUp = () => {
 
                 <Formik
                     initialValues={initialValues}
-                    validationSchema={signUpSchema}
                     onSubmit={onSubmit}
                 >
                     {({
@@ -73,14 +72,6 @@ const SignUp = () => {
                             action="/signup"
                         >
                             <AntForm.Item
-                                // validateStatus={
-                                //     errors.name && touched.name ? "error" : ""
-                                // }
-                                // help={
-                                //     errors.name && touched.name ? (
-                                //         <span className='form-error'>{errors.name}</span>
-                                //     ) : null
-                                // }
                                 label={<span className='form-label'>Name</span>}
 
                             >
@@ -95,14 +86,6 @@ const SignUp = () => {
                             </AntForm.Item>
 
                             <AntForm.Item
-                                // validateStatus={
-                                //     errors.email && touched.email ? "error" : ""
-                                // }
-                                // help={
-                                //     errors.email && touched.email ? (
-                                //         <span className='form-error'>{errors.email}</span>
-                                //     ) : null
-                                // }
                                 label={<span className='form-label'>Email</span>}
                             >
                                 <Input
@@ -116,7 +99,6 @@ const SignUp = () => {
                             </AntForm.Item>
 
                             <AntForm.Item
-
                                 label={<span className='form-label'>Password</span>}
                             >
                                 <Input
@@ -140,8 +122,7 @@ const SignUp = () => {
                                 <Button
                                     onClick={() => navigate("/login")}
                                     type='primary'
-                                    className='submit-btn'
-
+                                    className='submit-btn-black'
                                 >Log in</Button>
                             </div>
                         </AntForm>

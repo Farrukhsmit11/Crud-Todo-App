@@ -4,3 +4,18 @@
     gap: 13px;
     margin-top: 28px;
 }
+
+.submit-btn-black {
+    width: 100%;
+    padding: 19px;
+    font-family: 'Poppins';
+    font-weight: 600;
+    border-radius: 19px;
+    background: black;
+    color: white;
+}
+
+.submit-btn-black:hover {
+    background: black !important;
+    color: white !important;
+}
