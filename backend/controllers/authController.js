@@ -107,7 +107,6 @@ export const loginUser = async (request, response) => {
         })
 
         const otp = generateOtp()
-        console.log(otp)
 
         const otpHash = await bcrypt.hashSync(otp.toString(), 10)
 
@@ -174,7 +173,6 @@ export const forgotPassword = async (request, response) => {
             expiresTime: new Date(Date.now() + 10 * 60 * 1000)
         })
 
-        console.log(otp)
 
         await transporter.sendMail(mailData)
 
